@@ -29,17 +29,38 @@ cd gsuite-manager
 
 # 2. Setup virtualenv + install
 python3 -m venv .venv
-source .venv/bin/activate
+```
+
+**Activate virtualenv (pilih sesuai OS):**
+
+| OS | Command |
+|---|---|
+| macOS / Linux | `source .venv/bin/activate` |
+| Windows (CMD) | `.venv\Scripts\activate.bat` |
+| Windows (PowerShell) | `.venv\Scripts\Activate.ps1` |
+
+```bash
+# 3. Install dependencies
 pip install -e .
 
-# 3. macOS Python 3.14 fix (WAJIB di macOS):
-chflags -R nohidden .venv
-
-# 4. Verify install
+# 4. Verify
 gsm --version
 ```
 
-> **Alternatif (pipx):** `pipx install .` — install global tanpa activate venv tiap kali.
+**macOS only (Python 3.14 fix):**
+```bash
+chflags -R nohidden .venv
+```
+> Tanpa ini, `gsm` command gak ke-detect di macOS. Linux/Windows gak perlu step ini.
+
+**Linux only (kalo error "No module named venv"):**
+```bash
+sudo apt install python3-venv   # Debian/Ubuntu
+# atau
+sudo dnf install python3        # Fedora (sudah include venv)
+```
+
+> **Alternatif (semua OS):** `pipx install .` — install global tanpa activate venv tiap kali.
 
 ---
 
