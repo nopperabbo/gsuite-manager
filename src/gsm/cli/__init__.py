@@ -7,6 +7,7 @@ from gsm.cli.commands.doctor import doctor_command
 from gsm.cli.commands.domains import domains_app
 from gsm.cli.commands.expiry import check_expiry_command
 from gsm.cli.commands.go import go_command
+from gsm.cli.commands.groups import groups_app
 from gsm.cli.commands.health import health_command
 from gsm.cli.commands.init import init_command, setup_command
 from gsm.cli.commands.ledger import ledger_app
@@ -23,6 +24,7 @@ app = typer.Typer(
 
 app.add_typer(domains_app)
 app.add_typer(users_app)
+app.add_typer(groups_app)
 app.add_typer(ledger_app)
 app.command("go", help="⚡ All-in-one: onboard domains + create users. Auto-detect files.")(
     go_command

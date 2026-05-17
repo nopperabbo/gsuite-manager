@@ -258,6 +258,84 @@ class GoogleAdminClient:
         except (TimeoutError, OSError) as e:
             raise GoogleAdminError(f"network error assigning license: {e}") from e
 
+    def create_group(self, email: str, name: str | None = None, description: str = "") -> bool:
+        """Create a Google Group (mailing list). Idempotent."""
+        try:
+            body: dict[str, Any] = {"email": email}
+            if name:
+                body["name"] = name
+            if description:
+                body["description"] = description
+            self._admin().groups().insert(body=body).execute()
+            return True
+        except HttpError as e:
+            if _is_duplicate_error(e):
+                return True
+            raise GoogleAdminError(f"failed to create group {email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error creating group: {e}") from e
+
+    def list_groups(self, domain: str | None = None) -> list[dict[str, Any]]:
+        """List groups, optionally filtered by domain."""
+        try:
+            kwargs: dict[str, Any] = {"customer": "my_customer", "maxResults": 200}
+            if domain:
+                kwargs["domain"] = domain
+            groups: list[dict[str, Any]] = []
+            req = self._admin().groups().list(**kwargs)
+            while req is not None:
+                resp = req.execute()
+                groups.extend(resp.get("groups") or [])
+                req = self._admin().groups().list_next(req, resp)
+            return groups
+        except HttpError as e:
+            raise GoogleAdminError(f"failed to list groups: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error listing groups: {e}") from e
+
+    def add_group_member(self, group_email: str, member_email: str, role: str = "MEMBER") -> bool:
+        """Add member to a group. Idempotent."""
+        try:
+            self._admin().members().insert(
+                groupKey=group_email,
+                body={"email": member_email, "role": role},
+            ).execute()
+            return True
+        except HttpError as e:
+            if _is_duplicate_error(e):
+                return True
+            raise GoogleAdminError(f"failed to add {member_email} to {group_email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error adding member: {e}") from e
+
+    def remove_group_member(self, group_email: str, member_email: str) -> bool:
+        """Remove member from a group."""
+        try:
+            self._admin().members().delete(groupKey=group_email, memberKey=member_email).execute()
+            return True
+        except HttpError as e:
+            payload = _http_error_payload(e)
+            if "not found" in payload:
+                return True
+            raise GoogleAdminError(f"failed to remove {member_email} from {group_email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error removing member: {e}") from e
+
+    def list_group_members(self, group_email: str) -> list[dict[str, Any]]:
+        """List members of a group."""
+        try:
+            members: list[dict[str, Any]] = []
+            req = self._admin().members().list(groupKey=group_email)
+            while req is not None:
+                resp = req.execute()
+                members.extend(resp.get("members") or [])
+                req = self._admin().members().list_next(req, resp)
+            return members
+        except HttpError as e:
+            raise GoogleAdminError(f"failed to list members of {group_email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error listing members: {e}") from e
+
 
 def _is_duplicate_error(err: Any) -> bool:
     """Detect whether HttpError represents an already-exists / duplicate condition.
