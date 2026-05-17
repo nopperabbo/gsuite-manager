@@ -1,5 +1,11 @@
 # gsuite-manager (`gsm`)
 
+[![CI](https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
+[![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](https://mypy-lang.org/)
+
 **1 command buat otomatisin Google Workspace + Cloudflare.** Add domain, inject DNS, verify, create users — semua dari terminal.
 
 > 🇮🇩 **Tutorial lengkap (Bahasa Indonesia):** [`docs/CARA_PAKE.md`](docs/CARA_PAKE.md)
