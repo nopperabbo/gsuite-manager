@@ -187,6 +187,77 @@ class GoogleAdminClient:
                 f"network error moving {email}: {e}"
             ) from e
 
+    def delete_user(self, email: str) -> bool:
+        """Delete a user permanently (30-day recovery window in Google)."""
+        try:
+            self._admin().users().delete(userKey=email).execute()
+            return True
+        except HttpError as e:
+            payload = _http_error_payload(e)
+            if "not found" in payload:
+                return True
+            raise GoogleAdminError(f"failed to delete {email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error deleting {email}: {e}") from e
+
+    def add_alias(self, email: str, alias: str) -> bool:
+        """Add email alias to a user."""
+        try:
+            self._admin().users().aliases().insert(
+                userKey=email, body={"alias": alias}
+            ).execute()
+            return True
+        except HttpError as e:
+            payload = _http_error_payload(e)
+            if "duplicate" in payload or "already exists" in payload:
+                return True
+            raise GoogleAdminError(f"failed to add alias {alias} to {email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error adding alias: {e}") from e
+
+    def list_aliases(self, email: str) -> list[str]:
+        """List all aliases for a user."""
+        try:
+            resp = self._admin().users().aliases().list(userKey=email).execute()
+            aliases = resp.get("aliases", [])
+            return [a.get("alias", "") for a in aliases if a.get("alias")]
+        except HttpError as e:
+            raise GoogleAdminError(f"failed to list aliases for {email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error listing aliases: {e}") from e
+
+    def remove_alias(self, email: str, alias: str) -> bool:
+        """Remove email alias from a user."""
+        try:
+            self._admin().users().aliases().delete(userKey=email, alias=alias).execute()
+            return True
+        except HttpError as e:
+            payload = _http_error_payload(e)
+            if "not found" in payload:
+                return True
+            raise GoogleAdminError(f"failed to remove alias {alias}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error removing alias: {e}") from e
+
+    def assign_license(self, email: str, sku_id: str, product_id: str) -> bool:
+        """Assign a license to a user via Licensing API."""
+        try:
+            from googleapiclient.discovery import build as _build
+            licensing = _build("licensing", "v1", credentials=self._auth.get_credentials())
+            licensing.licenseAssignments().insert(
+                productId=product_id,
+                skuId=sku_id,
+                body={"userId": email},
+            ).execute()
+            return True
+        except HttpError as e:
+            payload = _http_error_payload(e)
+            if "duplicate" in payload or "already" in payload:
+                return True
+            raise GoogleAdminError(f"failed to assign license to {email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error assigning license: {e}") from e
+
 
 def _is_duplicate_error(err: Any) -> bool:
     """Detect whether HttpError represents an already-exists / duplicate condition.

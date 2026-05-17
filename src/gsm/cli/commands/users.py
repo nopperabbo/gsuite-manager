@@ -175,6 +175,16 @@ def users_gen(
             "Tanpa flag ini, hanya preview / tulis ke file."
         ),
     ),
+    license: str | None = typer.Option(
+        None,
+        "--license",
+        "-L",
+        help=(
+            "Assign license setelah create. "
+            "Options: 'education' (full), 'gmail-only' (Fundamentals), "
+            "atau SKU ID custom."
+        ),
+    ),
     seed: int | None = typer.Option(
         None,
         "--seed",
@@ -232,6 +242,10 @@ def users_gen(
                 on_progress=on_progress,
             )
         render_results(results, title=f"Creating {len(specs)} user(s)")
+
+        if license and any(r.kind is ResultKind.SUCCESS for r in results):
+            _assign_licenses(runtime, results, license)
+
         if any(r.kind is ResultKind.FAILED for r in results):
             raise typer.Exit(code=1)
 
@@ -415,6 +429,41 @@ def users_unsuspend(
     console.print(f"[green]Unsuspended {success}/{len(emails)} user(s).[/green]")
 
 
+LICENSE_MAP = {
+    "education": ("101031", "1010310003"),
+    "gmail-only": ("101031", "1010310008"),
+    "education-plus": ("101031", "1010310009"),
+    "education-standard": ("101031", "1010310010"),
+}
+
+
+def _assign_licenses(runtime: Any, results: list[Any], license_key: str) -> None:
+    from gsm.clients.google_admin import GoogleAdminError
+
+    if license_key in LICENSE_MAP:
+        product_id, sku_id = LICENSE_MAP[license_key]
+    else:
+        parts = license_key.split("/", 1)
+        if len(parts) != 2:
+            err_console.print(
+                f"[yellow][!][/yellow] License '{license_key}' not recognized. "
+                f"Valid: {', '.join(LICENSE_MAP.keys())} atau 'productId/skuId'."
+            )
+            return
+        product_id, sku_id = parts
+
+    success = 0
+    for r in results:
+        if r.kind != ResultKind.SUCCESS:
+            continue
+        try:
+            runtime.admin.assign_license(r.identifier, sku_id, product_id)
+            success += 1
+        except GoogleAdminError as e:
+            err_console.print(f"[yellow][!][/yellow] License {r.identifier}: {e}")
+    console.print(f"[green][+][/green] License assigned to {success} user(s).")
+
+
 def _resolve_user_targets(runtime: Any, *, file: Path | None, domain: str | None) -> list[str]:
     if file:
         from gsm.cli._shared import read_lines
@@ -515,3 +564,95 @@ def users_move(
         except GoogleAdminError as e:
             err_console.print(f"[red][-][/red] {email}: {e}")
     console.print(f"[green]Moved {success}/{len(emails)} user(s) to OU '{ou}'.[/green]")
+
+
+@users_app.command("delete")
+def users_delete(
+    ctx: typer.Context,
+    file: Path | None = typer.Option(None, "--file", "-f", help="File with emails to delete."),
+    domain: str | None = typer.Option(None, "--domain", "-d", help="Delete ALL users in domain."),
+    confirm: bool = typer.Option(False, "--yes", help="Skip confirmation prompt."),
+) -> None:
+    """Bulk delete users (PERMANENT - 30 day recovery window in Google)."""
+    from rich.prompt import Confirm
+
+    runtime = get_context(ctx)
+    emails = _resolve_user_targets(runtime, file=file, domain=domain)
+    if not emails:
+        return
+
+    console.print(
+        f"[bold red]⚠️  DELETING {len(emails)} user(s). This is PERMANENT.[/bold red]\n"
+        "[dim]Google keeps deleted users for 30 days (recoverable via Admin Console).[/dim]"
+    )
+    if not confirm and not Confirm.ask("Yakin mau delete?", default=False):
+        console.print("[dim]Cancelled.[/dim]")
+        return
+
+    from gsm.clients.google_admin import GoogleAdminError
+
+    success = 0
+    for email in emails:
+        try:
+            runtime.admin.delete_user(email)
+            success += 1
+        except GoogleAdminError as e:
+            err_console.print(f"[red][-][/red] {email}: {e}")
+    console.print(f"[green]Deleted {success}/{len(emails)} user(s).[/green]")
+
+
+@users_app.command("alias-add")
+def users_alias_add(
+    ctx: typer.Context,
+    email: str = typer.Argument(..., help="User email (target)."),
+    alias: str = typer.Argument(..., help="Alias email to add."),
+) -> None:
+    """Add email alias to a user (e.g. info@domain → user@domain)."""
+    from gsm.clients.google_admin import GoogleAdminError
+
+    runtime = get_context(ctx)
+    try:
+        runtime.admin.add_alias(email, alias)
+        console.print(f"[green][+][/green] Alias {alias} → {email}")
+    except GoogleAdminError as e:
+        err_console.print(f"[red][-][/red] {e}")
+        raise typer.Exit(code=1) from e
+
+
+@users_app.command("alias-list")
+def users_alias_list(
+    ctx: typer.Context,
+    email: str = typer.Argument(..., help="User email to list aliases for."),
+) -> None:
+    """List all aliases for a user."""
+    from gsm.clients.google_admin import GoogleAdminError
+
+    runtime = get_context(ctx)
+    try:
+        aliases = runtime.admin.list_aliases(email)
+    except GoogleAdminError as e:
+        err_console.print(f"[red][-][/red] {e}")
+        raise typer.Exit(code=1) from e
+    if not aliases:
+        console.print(f"[dim]{email} has no aliases.[/dim]")
+        return
+    for a in aliases:
+        console.print(f"  • {a} → {email}")
+
+
+@users_app.command("alias-remove")
+def users_alias_remove(
+    ctx: typer.Context,
+    email: str = typer.Argument(..., help="User email (owner)."),
+    alias: str = typer.Argument(..., help="Alias to remove."),
+) -> None:
+    """Remove email alias from a user."""
+    from gsm.clients.google_admin import GoogleAdminError
+
+    runtime = get_context(ctx)
+    try:
+        runtime.admin.remove_alias(email, alias)
+        console.print(f"[green][+][/green] Removed alias {alias}")
+    except GoogleAdminError as e:
+        err_console.print(f"[red][-][/red] {e}")
+        raise typer.Exit(code=1) from e
