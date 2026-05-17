@@ -336,6 +336,33 @@ class GoogleAdminClient:
         except (TimeoutError, OSError) as e:
             raise GoogleAdminError(f"network error listing members: {e}") from e
 
+    def update_user(self, email: str, **fields: Any) -> bool:
+        """Update user fields (name, phone, department, title, etc)."""
+        try:
+            body: dict[str, Any] = {}
+            if "first_name" in fields or "last_name" in fields:
+                body["name"] = {}
+                if "first_name" in fields:
+                    body["name"]["givenName"] = fields["first_name"]
+                if "last_name" in fields:
+                    body["name"]["familyName"] = fields["last_name"]
+            for key in ("department", "title", "phone"):
+                if key in fields:
+                    if key == "phone":
+                        body["phones"] = [{"value": fields[key], "type": "work", "primary": True}]
+                    else:
+                        body["organizations"] = [
+                            {**body.get("organizations", [{}])[0], key: fields[key]}
+                        ]
+            if not body:
+                return False
+            self._admin().users().update(userKey=email, body=body).execute()
+            return True
+        except HttpError as e:
+            raise GoogleAdminError(f"failed to update {email}: {e}") from e
+        except (TimeoutError, OSError) as e:
+            raise GoogleAdminError(f"network error updating {email}: {e}") from e
+
 
 def _is_duplicate_error(err: Any) -> bool:
     """Detect whether HttpError represents an already-exists / duplicate condition.

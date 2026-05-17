@@ -38,6 +38,12 @@ def users_add(
         help="Path to akun.txt file (format: email|password|kode per line). "
         "Resolved relative to CWD.",
     ),
+    license: str | None = typer.Option(
+        None,
+        "--license",
+        "-L",
+        help="Assign license after create: 'education', 'gmail-only', 'education-standard', 'education-plus'.",
+    ),
 ) -> None:
     """Bulk-create Workspace users from akun.txt."""
     accounts = parse_akun_file(file)
@@ -55,6 +61,10 @@ def users_add(
             on_progress=on_progress,
         )
     render_results(results, title=f"Creating {len(accounts)} user(s)")
+
+    if license and any(r.kind is ResultKind.SUCCESS for r in results):
+        _assign_licenses(runtime, results, license)
+
     if any(r.kind is ResultKind.FAILED for r in results):
         raise typer.Exit(code=1)
 
@@ -430,10 +440,10 @@ def users_unsuspend(
 
 
 LICENSE_MAP = {
-    "education": ("101031", "1010310003"),
-    "gmail-only": ("101031", "1010310008"),
+    "education": ("Google-Apps", "Google-Apps-For-Education"),
+    "gmail-only": ("Google-Apps", "1010070004"),
+    "education-standard": ("101031", "1010310005"),
     "education-plus": ("101031", "1010310009"),
-    "education-standard": ("101031", "1010310010"),
 }
 
 
@@ -656,3 +666,50 @@ def users_alias_remove(
     except GoogleAdminError as e:
         err_console.print(f"[red][-][/red] {e}")
         raise typer.Exit(code=1) from e
+
+
+@users_app.command("update")
+def users_update(
+    ctx: typer.Context,
+    file: Path = typer.Option(..., "--file", "-f", help="CSV file: email,field,value (one change per line)."),
+) -> None:
+    """Bulk update user info from CSV (name, department, title, phone).
+
+    CSV format (no header):
+      user@domain.tech,first_name,John
+      user@domain.tech,last_name,Doe
+      user@domain.tech,department,Engineering
+      user@domain.tech,title,Senior Dev
+      user@domain.tech,phone,+628123456789
+    """
+    from gsm.clients.google_admin import GoogleAdminError
+
+    if not file.exists():
+        err_console.print(f"[red][-][/red] File not found: {file}")
+        raise typer.Exit(code=2)
+
+    runtime = get_context(ctx)
+    updates: dict[str, dict[str, str]] = {}
+    with file.open("r", encoding="utf-8") as f:
+        for raw in f:
+            line = raw.strip()
+            if not line or line.startswith("#"):
+                continue
+            parts = [p.strip() for p in line.split(",", 2)]
+            if len(parts) < 3:
+                continue
+            email, field, value = parts
+            updates.setdefault(email, {})[field] = value
+
+    if not updates:
+        console.print("[yellow]No valid updates in file.[/yellow]")
+        return
+
+    success = 0
+    for email, fields in updates.items():
+        try:
+            runtime.admin.update_user(email, **fields)
+            success += 1
+        except GoogleAdminError as e:
+            err_console.print(f"[red][-][/red] {email}: {e}")
+    console.print(f"[green]Updated {success}/{len(updates)} user(s).[/green]")
