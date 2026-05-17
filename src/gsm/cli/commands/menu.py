@@ -18,16 +18,19 @@ MENU_ITEMS = [
     ("4", "Reset password (bulk)", "gsm users reset-password"),
     ("5", "Suspend users", "gsm users suspend"),
     ("6", "Unsuspend users", "gsm users unsuspend"),
-    ("7", "Audit: CF vs Workspace gap", "gsm audit"),
-    ("8", "Health check DNS", "gsm health"),
-    ("9", "Check domain expiry", "gsm check-expiry"),
-    ("10", "List domains", "gsm domains list"),
-    ("11", "List users", "gsm users list"),
-    ("12", "Inactive user audit", "gsm users audit"),
-    ("13", "Apply DNS template", "gsm dns-apply"),
-    ("14", "Move users to OU", "gsm users move"),
-    ("15", "Ledger stats", "gsm ledger stats"),
-    ("16", "Doctor (health check config)", "gsm doctor"),
+    ("7", "Delete users", "gsm users delete"),
+    ("8", "Email aliases (add/list/remove)", "gsm users alias"),
+    ("9", "Groups / mailing list", "gsm groups"),
+    ("10", "Audit: CF vs Workspace gap", "gsm audit"),
+    ("11", "Health check DNS", "gsm health"),
+    ("12", "Check domain expiry", "gsm check-expiry"),
+    ("13", "List domains", "gsm domains list"),
+    ("14", "List users", "gsm users list"),
+    ("15", "Inactive user audit", "gsm users audit"),
+    ("16", "Apply DNS template", "gsm dns-apply"),
+    ("17", "Move users to OU", "gsm users move"),
+    ("18", "Ledger stats", "gsm ledger stats"),
+    ("19", "Doctor (health check config)", "gsm doctor"),
     ("0", "Exit", ""),
 ]
 
@@ -238,7 +241,98 @@ def _run_submenu(choice: str, ctx: typer.Context, app: typer.Typer) -> None:
                 console.print(f"[red][-] {email}: {e}[/red]")
         console.print(f"[green]Unsuspended {ok}/{len(emails)}.[/green]")
 
-    elif choice in ("7", "8", "9", "10", "11", "12", "13", "14", "15", "16"):
+    elif choice == "7":
+        runtime = get_context(ctx)
+        domain = Prompt.ask("Domain untuk delete semua user-nya (atau path ke file)")
+        path = Path(domain)
+        if path.exists():
+            emails = read_lines(path)
+        else:
+            from gsm.clients.google_admin import GoogleAdminError
+            try:
+                ws_users = runtime.admin.list_users(domain=domain)
+            except GoogleAdminError as e:
+                console.print(f"[red]{e}[/red]")
+                return
+            emails = [u["primaryEmail"] for u in ws_users if u.get("primaryEmail")]
+        if not emails:
+            console.print("[yellow]Gak ada user.[/yellow]")
+            return
+        console.print(f"[bold red]⚠️  {len(emails)} user(s) akan di-DELETE (permanent).[/bold red]")
+        if not Confirm.ask("Yakin?", default=False):
+            return
+        from gsm.clients.google_admin import GoogleAdminError
+        ok = 0
+        for email in emails:
+            try:
+                runtime.admin.delete_user(email)
+                ok += 1
+            except GoogleAdminError as e:
+                console.print(f"[red][-] {email}: {e}[/red]")
+        console.print(f"[green]Deleted {ok}/{len(emails)}.[/green]")
+
+    elif choice == "8":
+        action = Prompt.ask("Action", choices=["add", "list", "remove"], default="add")
+        if action == "add":
+            user = Prompt.ask("User email (target)")
+            alias = Prompt.ask("Alias email")
+            runtime = get_context(ctx)
+            from gsm.clients.google_admin import GoogleAdminError
+            try:
+                runtime.admin.add_alias(user, alias)
+                console.print(f"[green][+][/green] {alias} → {user}")
+            except GoogleAdminError as e:
+                console.print(f"[red]{e}[/red]")
+        elif action == "list":
+            user = Prompt.ask("User email")
+            runtime = get_context(ctx)
+            from gsm.clients.google_admin import GoogleAdminError
+            try:
+                aliases = runtime.admin.list_aliases(user)
+                for a in aliases:
+                    console.print(f"  • {a}")
+                if not aliases:
+                    console.print("[dim]No aliases.[/dim]")
+            except GoogleAdminError as e:
+                console.print(f"[red]{e}[/red]")
+        else:
+            user = Prompt.ask("User email")
+            alias = Prompt.ask("Alias to remove")
+            runtime = get_context(ctx)
+            from gsm.clients.google_admin import GoogleAdminError
+            try:
+                runtime.admin.remove_alias(user, alias)
+                console.print(f"[green][+][/green] Removed {alias}")
+            except GoogleAdminError as e:
+                console.print(f"[red]{e}[/red]")
+
+    elif choice == "9":
+        action = Prompt.ask("Action", choices=["create", "list", "add-member", "members"], default="list")
+        import subprocess
+        import sys
+        gsm_bin = str(Path(sys.executable).parent / "gsm")
+        if action == "create":
+            email = Prompt.ask("Group email (e.g. all@domain.tech)")
+            name = Prompt.ask("Display name (optional)", default="")
+            args = ["groups", "create", email]
+            if name:
+                args.extend(["--name", name])
+            subprocess.run([gsm_bin, *args], check=False)
+        elif action == "list":
+            domain = Prompt.ask("Domain (kosong = semua)", default="")
+            args = ["groups", "list"]
+            if domain:
+                args.extend(["--domain", domain])
+            subprocess.run([gsm_bin, *args], check=False)
+        elif action == "add-member":
+            group = Prompt.ask("Group email")
+            member = Prompt.ask("Member email")
+            subprocess.run([gsm_bin, "groups", "add-member", group, "--member", member], check=False)
+        elif action == "members":
+            group = Prompt.ask("Group email")
+            subprocess.run([gsm_bin, "groups", "members", group], check=False)
+
+    elif choice in ("10", "11", "12", "13", "14", "15", "16", "17", "18", "19"):
         _dispatch_via_subprocess(choice)
 
 
@@ -248,26 +342,26 @@ def _dispatch_via_subprocess(choice: str) -> None:
     import sys
 
     cmd_map = {
-        "7": ["audit"],
-        "8": ["health"],
-        "9": ["check-expiry"],
-        "10": ["domains", "list"],
-        "11": ["users", "list"],
-        "12": ["users", "audit"],
-        "13": ["dns-apply"],
-        "14": ["users", "move"],
-        "15": ["ledger", "stats"],
-        "16": ["doctor"],
+        "10": ["audit"],
+        "11": ["health"],
+        "12": ["check-expiry"],
+        "13": ["domains", "list"],
+        "14": ["users", "list"],
+        "15": ["users", "audit"],
+        "16": ["dns-apply"],
+        "17": ["users", "move"],
+        "18": ["ledger", "stats"],
+        "19": ["doctor"],
     }
     args = list(cmd_map[choice])
-    if choice == "13":
+    if choice == "16":
         tpl = Prompt.ask("Path ke YAML template")
         args.append(tpl)
-    elif choice == "14":
+    elif choice == "17":
         ou = Prompt.ask("OU path (e.g. /Sales)")
         domain = Prompt.ask("Domain")
         args.extend(["--ou", ou, "--domain", domain])
-    elif choice == "12":
+    elif choice == "15":
         days = Prompt.ask("Inactive days threshold", default="30")
         args.extend(["--inactive-days", days])
 
