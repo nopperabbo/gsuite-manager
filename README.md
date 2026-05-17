@@ -1,47 +1,114 @@
 # gsuite-manager (`gsm`)
 
-> Status: **Phase 2 complete - public-deliverable, awam-friendly UX**
->
-> Automated GSuite Workspace + Cloudflare domain and user management. Replaces a stack of scrappy production scripts with a single, idempotent, well-tested CLI.
+**1 command buat otomatisin Google Workspace + Cloudflare.** Add domain, inject DNS, verify, create users — semua dari terminal.
 
-> 🇮🇩 **User guide (Bahasa Indonesia):** [`docs/CARA_PAKE.md`](docs/CARA_PAKE.md)
+> 🇮🇩 **Tutorial lengkap (Bahasa Indonesia):** [`docs/CARA_PAKE.md`](docs/CARA_PAKE.md)
 >
-> 🧪 **Cara test sendiri:** [`docs/CARA_TEST.md`](docs/CARA_TEST.md) (Tier 1: 5 menit smoke, Tier 2: 1 domain end-to-end)
+> 🔧 **Google OAuth setup:** [`docs/SETUP_GOOGLE_OAUTH.md`](docs/SETUP_GOOGLE_OAUTH.md)
 >
-> 🔧 **Google OAuth setup walkthrough:** [`docs/SETUP_GOOGLE_OAUTH.md`](docs/SETUP_GOOGLE_OAUTH.md) (step-by-step buat dapetin credentials.json)
->
-> 🚀 **Production runbook:** [`docs/PRODUCTION_RUNBOOK.md`](docs/PRODUCTION_RUNBOOK.md) (rotate CF token, real smoke test)
->
-> 🗺️ **Roadmap:** [`docs/ROADMAP.md`](docs/ROADMAP.md) (Phase 3+: registrar automation, Web GUI, concurrent)
+> 🗺️ **Roadmap:** [`docs/ROADMAP.md`](docs/ROADMAP.md)
 
-## Quickstart (recommended path)
+---
+
+## Prerequisites
+
+- **Python 3.11+** (`python3 --version`)
+- **Google Workspace admin account** (yang bisa login ke https://admin.google.com)
+- **Cloudflare account** dengan domain yang udah di-add sebagai zone
+- **Google OAuth Desktop App credentials** (file `credentials.json` — cara dapet: [`docs/SETUP_GOOGLE_OAUTH.md`](docs/SETUP_GOOGLE_OAUTH.md))
+- **Cloudflare API Token** (cara dapet: https://dash.cloudflare.com/profile/api-tokens → template "Edit zone DNS")
+
+---
+
+## Install
 
 ```bash
-# 1. Install via pipx (one-time, global)
-pipx install .
+# 1. Clone repo
+git clone https://github.com/nopperabbo/gsuite-manager.git
+cd gsuite-manager
 
-# 2. Interactive setup wizard (asks 3 questions, auto-detects, tests live)
+# 2. Setup virtualenv + install
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+
+# 3. macOS Python 3.14 fix (WAJIB di macOS):
+chflags -R nohidden .venv
+
+# 4. Verify install
+gsm --version
+```
+
+> **Alternatif (pipx):** `pipx install .` — install global tanpa activate venv tiap kali.
+
+---
+
+## Setup (sekali, interaktif)
+
+```bash
 gsm setup
+```
 
-# 3. Verify everything is wired up
-gsm doctor
+Wizard nanya:
+1. CF API Token → paste
+2. CF Account ID → auto-detect
+3. OAuth file → auto-detect
 
-# 4. Onboard domains (with progress bar + ETA)
-gsm domains add example.com
-# or bulk:
+Verify:
+```bash
+gsm doctor    # target: 5/5 PASS
+```
+
+---
+
+## Usage
+
+### Cara paling simpel: ketik `gsm`
+
+```bash
+gsm
+```
+
+Muncul menu interaktif — pilih nomor, jawab pertanyaan, selesai.
+
+### Cara cepat: `gsm go`
+
+Taruh `domains.txt` dan/atau `akun.txt` di folder, lalu:
+
+```bash
+gsm go
+```
+
+Auto-detect files, onboard domains + create users, 1 command.
+
+### Command-by-command
+
+```bash
+# Onboard domain
+gsm domains add example.tech
 gsm domains add --file domains.txt
 
-# 5. Bulk create users (akun.txt format: email|password|code)
+# Auto-generate + create users (tanpa file manual)
+gsm users gen --domain example.tech --count 10 --apply
+
+# Atau dari file akun.txt (format: email|password|code)
 gsm users add --file akun.txt
 
-# 6. Re-verify domains stuck in DNS_PENDING
-gsm domains verify --only-pending
+# Audit gap CF vs Workspace
+gsm audit
 
-# 7. Inspect state
-gsm domains list
-gsm users list
-gsm ledger stats
+# Health check DNS
+gsm health
+
+# Reset password bulk
+gsm users reset-password --domain example.tech --random --output creds.txt
+
+# Suspend/unsuspend
+gsm users suspend --domain compromised.tech
+gsm users unsuspend --domain compromised.tech
 ```
+
+Full command list: `gsm --help` atau lihat [`docs/CARA_PAKE.md`](docs/CARA_PAKE.md)
 
 ## Auto-generate akun.txt (Faker, locale-aware)
 
