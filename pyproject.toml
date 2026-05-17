@@ -21,12 +21,6 @@ classifiers = [
     "Topic :: System :: Systems Administration",
     "Typing :: Typed",
 ]
-
-[project.urls]
-Homepage = "https://github.com/nopperabbo/gsuite-manager"
-Repository = "https://github.com/nopperabbo/gsuite-manager"
-Issues = "https://github.com/nopperabbo/gsuite-manager/issues"
-Documentation = "https://github.com/nopperabbo/gsuite-manager/blob/main/docs/CARA_PAKE.md"
 dependencies = [
     "typer>=0.12.0",
     "pydantic>=2.7.0",
@@ -39,7 +33,14 @@ dependencies = [
     "structlog>=24.1.0",
     "rich>=13.7.0",
     "pyyaml>=6.0",
+    "faker>=24.0.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/nopperabbo/gsuite-manager"
+Repository = "https://github.com/nopperabbo/gsuite-manager"
+Issues = "https://github.com/nopperabbo/gsuite-manager/issues"
+Documentation = "https://github.com/nopperabbo/gsuite-manager/blob/main/docs/CARA_PAKE.md"
 
 [project.optional-dependencies]
 dev = [
