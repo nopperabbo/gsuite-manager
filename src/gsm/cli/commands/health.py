@@ -7,22 +7,14 @@ from rich.console import Console
 from rich.table import Table
 
 from gsm.cli._shared import get_context
+from gsm.models.constants import GOOGLE_MX_HOSTS
 
 console = Console()
-
-EXPECTED_MX = {
-    "aspmx.l.google.com",
-    "alt1.aspmx.l.google.com",
-    "alt2.aspmx.l.google.com",
-    "alt3.aspmx.l.google.com",
-    "alt4.aspmx.l.google.com",
-}
 
 
 def health_command(
     ctx: typer.Context,
     domain: str | None = typer.Option(None, "--domain", "-d", help="Check single domain."),
-    fix: bool = typer.Option(False, "--fix", help="Auto-fix missing MX/TXT (re-inject)."),
 ) -> None:
     """Check DNS health: MX records, TXT verification, NS pointing to CF."""
     import dns.resolver
@@ -50,7 +42,7 @@ def health_command(
         try:
             mx_answers = dns.resolver.resolve(d, "MX")
             mx_hosts = {r.exchange.to_text().rstrip(".").lower() for r in mx_answers}
-            missing_mx = EXPECTED_MX - mx_hosts
+            missing_mx = GOOGLE_MX_HOSTS - mx_hosts
             if missing_mx:
                 problems.append(f"missing MX: {', '.join(sorted(missing_mx)[:2])}...")
         except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.resolver.NoNameservers):
@@ -99,6 +91,3 @@ def health_command(
         f"[yellow]Issues: {len(set(i[0] for i in issues))}[/yellow]  "
         f"Total: {len(targets)}"
     )
-
-    if fix and issues:
-        console.print("\n[dim]--fix not yet implemented. Use `gsm domains add` to re-inject.[/dim]")

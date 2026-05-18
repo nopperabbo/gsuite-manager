@@ -227,11 +227,11 @@ gsm groups add-member team@domain.tech user1@domain.tech user2@domain.tech
 | Idempotent state machine | ✅ | ❌ | ❌ |
 | User CRUD | ✅ Basic | ✅ Full (500+ commands) | ✅ |
 | SPF/DKIM/DMARC | ❌ **MISSING** | ✅ | ✅ (manual) |
-| Groups management | ❌ **MISSING** | ✅ | ✅ |
+| Groups management | ✅ Implemented | ✅ | ✅ |
 | 2FA audit | ❌ **MISSING** | ✅ | ✅ |
-| Email aliases | ❌ **MISSING** | ✅ | ✅ |
+| Email aliases | ✅ Implemented | ✅ | ✅ |
 | Calendar/Drive management | ❌ Out of scope | ✅ | ✅ |
-| Bulk delete | ❌ **MISSING** | ✅ | ✅ (slow) |
+| Bulk delete | ✅ Implemented | ✅ | ✅ (slow) |
 | JSON output | ❌ **MISSING** | ✅ | ❌ |
 | Export CSV | ❌ **MISSING** | ✅ | ✅ |
 

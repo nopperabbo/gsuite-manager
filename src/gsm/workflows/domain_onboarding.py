@@ -30,17 +30,10 @@ from gsm.core.auth import AuthError
 from gsm.core.config import Settings
 from gsm.core.errors import humanize
 from gsm.core.logging import get_logger
+from gsm.models.constants import GOOGLE_MX_RECORDS
 from gsm.models.domain import DomainRecord, DomainStatus
 from gsm.models.results import ItemResult
 from gsm.state.ledger import Ledger
-
-GOOGLE_MX_RECORDS = [
-    {"content": "ASPMX.L.GOOGLE.COM", "priority": 1},
-    {"content": "ALT1.ASPMX.L.GOOGLE.COM", "priority": 5},
-    {"content": "ALT2.ASPMX.L.GOOGLE.COM", "priority": 5},
-    {"content": "ALT3.ASPMX.L.GOOGLE.COM", "priority": 10},
-    {"content": "ALT4.ASPMX.L.GOOGLE.COM", "priority": 10},
-]
 
 
 class DomainOnboarder:
