@@ -72,3 +72,6 @@ coverage.xml
 *.tar.gz
 *.whl
 .session-handoff.json
+
+# OpenCode project config (local dev only)
+.opencode/
