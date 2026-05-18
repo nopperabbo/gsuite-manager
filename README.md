@@ -2,13 +2,16 @@
 
 [![CI](https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
+[![Coverage 88%](https://img.shields.io/badge/coverage-88%25-brightgreen.svg)](tests/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Type checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](https://mypy-lang.org/)
+[![Typed: mypy strict](https://img.shields.io/badge/typed-mypy%20strict-blue.svg)](https://mypy-lang.org/)
 
 **Automate Google Workspace + Cloudflare in one CLI.** Onboard domains, create users, manage DNS — idempotent, tested, production-ready.
 
 ```
+$ gsm
+
 ╭─────────────── gsm - Menu Utama ───────────────╮
 │    1. Onboard domains                          │
 │    2. Create users (dari file akun.txt)        │
@@ -21,7 +24,14 @@
 │    9. Groups / mailing list                    │
 │   10. Audit: CF vs Workspace gap               │
 │   11. Health check DNS                         │
-│   12-19. More...                               │
+│   12. Check domain expiry                      │
+│   13. List domains                             │
+│   14. List users                               │
+│   15. Inactive user audit                      │
+│   16. Apply DNS template                       │
+│   17. Move users to OU                         │
+│   18. Ledger stats                             │
+│   19. Doctor (health check config)             │
 │    0. Exit                                     │
 ╰────────────────────────────────────────────────╯
 ```
@@ -106,6 +116,34 @@ gsm go
 | [Contributing](CONTRIBUTING.md) | Dev setup & guidelines |
 
 ## Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                        CLI Layer                             │
+│  gsm menu │ gsm go │ gsm domains │ gsm users │ gsm groups  │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+┌─────────────────────────▼───────────────────────────────────┐
+│                    Workflow Layer                            │
+│  domain_onboarding (7-step) │ user_bulk_create │ dns_apply  │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+┌─────────────────────────▼───────────────────────────────────┐
+│                    Client Layer                              │
+│  Cloudflare API │ Google Admin SDK │ Google Verify │ DNS     │
+│  (retry+backoff)│ (users/domains)  │ (site verify) │(dnspy) │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+┌─────────────────────────▼───────────────────────────────────┐
+│                     Core Layer                               │
+│  config (pydantic) │ auth (OAuth2) │ errors │ logging       │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+┌─────────────────────────▼───────────────────────────────────┐
+│                   State Layer                                │
+│  JSON Ledger (atomic writes, corrupt recovery, archive)     │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ```
 src/gsm/
