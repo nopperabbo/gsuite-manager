@@ -155,6 +155,10 @@ src/gsm/
 └── workflows/   # Domain onboarding, user creation orchestration
 ```
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=nopperabbo/gsuite-manager&type=Date)](https://star-history.com/#nopperabbo/gsuite-manager&Date)
+
 ## License
 
 [MIT](LICENSE) © nopperabbo

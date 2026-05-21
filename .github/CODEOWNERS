@@ -1,0 +1,15 @@
+# Default owner for everything
+* @nopperabbo
+
+# Source code
+/src/ @nopperabbo
+
+# Tests
+/tests/ @nopperabbo
+
+# CI/CD
+/.github/ @nopperabbo
+
+# Docs
+/docs/ @nopperabbo
+*.md @nopperabbo
