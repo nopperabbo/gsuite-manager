@@ -35,6 +35,8 @@ from gsm.models.domain import DomainRecord, DomainStatus
 from gsm.models.results import ItemResult
 from gsm.state.ledger import Ledger
 
+__all__ = ["DomainOnboarder", "onboard_domains"]
+
 
 class DomainOnboarder:
     """Stateful onboarding executor: pass injected dependencies, call .run(domain)."""
@@ -263,12 +265,18 @@ def onboard_domains(
     results: list[ItemResult] = []
     total = len(domains)
     for idx, domain in enumerate(domains):
-        result = onboarder.run(domain)
+        try:
+            result = onboarder.run(domain)
+        except KeyboardInterrupt:
+            break
         results.append(result)
         if on_progress is not None:
             on_progress(idx + 1, total, domain, result)
         if idx < total - 1 and delay > 0:
-            time.sleep(delay)
+            try:
+                time.sleep(delay)
+            except KeyboardInterrupt:
+                break
     return results
 
 

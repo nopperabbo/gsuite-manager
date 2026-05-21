@@ -1,17 +1,32 @@
 """Google Workspace Admin Directory API client.
 
 Wraps `admin/directory_v1` for domain operations. Handles 409/duplicate
-responses as success for idempotency.
+responses as success for idempotency. Retries transient errors (429, 5xx,
+network timeouts) with exponential backoff.
 """
 
 from __future__ import annotations
 
-import contextlib
+import time as _time
 from typing import Any, cast
 
+import structlog
 from googleapiclient.errors import HttpError
 
+from gsm.clients._google_errors import (
+    http_error_payload,
+    is_duplicate_error,
+)
 from gsm.core.auth import OAuthDesktopAuth
+
+__all__ = ["GoogleAdminClient", "GoogleAdminError"]
+
+_log = structlog.get_logger(__name__)
+
+# Transient HTTP statuses safe to retry.
+_RETRYABLE_STATUSES = frozenset({429, 500, 502, 503})
+_DEFAULT_MAX_ATTEMPTS = 3
+_DEFAULT_BACKOFF = (1.0, 2.0, 4.0)
 
 
 class GoogleAdminError(RuntimeError):
@@ -19,7 +34,13 @@ class GoogleAdminError(RuntimeError):
 
 
 class GoogleAdminClient:
-    """Client for Google Admin SDK Directory API (domains + users)."""
+    """Client for Google Admin SDK Directory API (domains + users).
+
+    All API calls are retried up to 3 times on transient errors (429, 5xx,
+    network timeouts) with exponential backoff.
+    """
+
+    _retry_backoff: tuple[float, ...] = _DEFAULT_BACKOFF
 
     def __init__(self, auth: OAuthDesktopAuth) -> None:
         self._auth = auth
@@ -30,19 +51,57 @@ class GoogleAdminClient:
             self._service = self._auth.build_admin_service()
         return self._service
 
+    def _exec(self, request: Any) -> Any:
+        """Execute a Google API request with retry on transient errors.
+
+        Retries on HttpError 429/500/502/503 and network errors (TimeoutError,
+        OSError). Non-retryable errors propagate immediately.
+        """
+        for attempt in range(_DEFAULT_MAX_ATTEMPTS):
+            try:
+                return request.execute()
+            except HttpError as e:
+                status = getattr(getattr(e, "resp", None), "status", None)
+                if status not in _RETRYABLE_STATUSES or attempt >= _DEFAULT_MAX_ATTEMPTS - 1:
+                    raise
+                delay = self._retry_backoff[attempt]
+                _log.warning(
+                    "google_api_retry",
+                    attempt=attempt + 1,
+                    status=status,
+                    delay=delay,
+                )
+                _time.sleep(delay)
+            except (TimeoutError, OSError) as e:
+                if attempt >= _DEFAULT_MAX_ATTEMPTS - 1:
+                    raise
+                delay = self._retry_backoff[attempt]
+                _log.warning(
+                    "google_api_retry",
+                    attempt=attempt + 1,
+                    error=str(e),
+                    delay=delay,
+                )
+                _time.sleep(delay)
+        # Unreachable, but satisfies type checker
+        msg = "retry loop exited unexpectedly"
+        raise RuntimeError(msg)
+
     def add_domain(self, domain: str) -> bool:
         """Add domain to Workspace. Treats already-exists as success.
 
         Returns True if domain is registered (newly added or already there).
         """
         try:
-            self._admin().domains().insert(
-                customer="my_customer",
-                body={"domainName": domain},
-            ).execute()
+            self._exec(
+                self._admin().domains().insert(
+                    customer="my_customer",
+                    body={"domainName": domain},
+                )
+            )
             return True
         except HttpError as e:
-            if _is_duplicate_error(e):
+            if is_duplicate_error(e):
                 return True
             raise GoogleAdminError(
                 f"failed to add domain {domain}: {e}"
@@ -75,10 +134,10 @@ class GoogleAdminClient:
             "changePasswordAtNextLogin": change_password_at_next_login,
         }
         try:
-            self._admin().users().insert(body=body).execute()
+            self._exec(self._admin().users().insert(body=body))
             return True
         except HttpError as e:
-            if _is_duplicate_error(e):
+            if is_duplicate_error(e):
                 return True
             raise GoogleAdminError(
                 f"failed to create user {email}: {e}"
@@ -91,11 +150,10 @@ class GoogleAdminClient:
     def list_domains(self) -> list[dict[str, Any]]:
         """List all domains registered to the Workspace customer."""
         try:
-            resp = (
+            resp = self._exec(
                 self._admin()
                 .domains()
                 .list(customer="my_customer")
-                .execute()
             )
             return cast(list[dict[str, Any]], resp.get("domains", []))
         except HttpError as e:
@@ -108,13 +166,13 @@ class GoogleAdminClient:
     ) -> bool:
         """Update a user's password. Returns True on success."""
         try:
-            self._admin().users().update(
+            self._exec(self._admin().users().update(
                 userKey=email,
                 body={
                     "password": password,
                     "changePasswordAtNextLogin": change_at_next_login,
                 },
-            ).execute()
+            ))
             return True
         except HttpError as e:
             raise GoogleAdminError(
@@ -128,9 +186,9 @@ class GoogleAdminClient:
     def suspend_user(self, email: str) -> bool:
         """Suspend a user (block login). Idempotent."""
         try:
-            self._admin().users().update(
+            self._exec(self._admin().users().update(
                 userKey=email, body={"suspended": True}
-            ).execute()
+            ))
             return True
         except HttpError as e:
             raise GoogleAdminError(f"failed to suspend {email}: {e}") from e
@@ -142,9 +200,9 @@ class GoogleAdminClient:
     def unsuspend_user(self, email: str) -> bool:
         """Unsuspend a user (re-enable login). Idempotent."""
         try:
-            self._admin().users().update(
+            self._exec(self._admin().users().update(
                 userKey=email, body={"suspended": False}
-            ).execute()
+            ))
             return True
         except HttpError as e:
             raise GoogleAdminError(f"failed to unsuspend {email}: {e}") from e
@@ -162,7 +220,7 @@ class GoogleAdminClient:
             users: list[dict[str, Any]] = []
             req = self._admin().users().list(**kwargs)
             while req is not None:
-                resp = req.execute()
+                resp = self._exec(req)
                 users.extend(resp.get("users") or [])
                 req = self._admin().users().list_next(req, resp)
             return users
@@ -174,9 +232,9 @@ class GoogleAdminClient:
     def move_user_to_ou(self, email: str, org_unit_path: str) -> bool:
         """Move user to an Organizational Unit. Creates OU path if needed."""
         try:
-            self._admin().users().update(
+            self._exec(self._admin().users().update(
                 userKey=email, body={"orgUnitPath": org_unit_path}
-            ).execute()
+            ))
             return True
         except HttpError as e:
             raise GoogleAdminError(
@@ -190,10 +248,10 @@ class GoogleAdminClient:
     def delete_user(self, email: str) -> bool:
         """Delete a user permanently (30-day recovery window in Google)."""
         try:
-            self._admin().users().delete(userKey=email).execute()
+            self._exec(self._admin().users().delete(userKey=email))
             return True
         except HttpError as e:
-            payload = _http_error_payload(e)
+            payload = http_error_payload(e)
             if "not found" in payload:
                 return True
             raise GoogleAdminError(f"failed to delete {email}: {e}") from e
@@ -203,12 +261,12 @@ class GoogleAdminClient:
     def add_alias(self, email: str, alias: str) -> bool:
         """Add email alias to a user."""
         try:
-            self._admin().users().aliases().insert(
+            self._exec(self._admin().users().aliases().insert(
                 userKey=email, body={"alias": alias}
-            ).execute()
+            ))
             return True
         except HttpError as e:
-            payload = _http_error_payload(e)
+            payload = http_error_payload(e)
             if "duplicate" in payload or "already exists" in payload:
                 return True
             raise GoogleAdminError(f"failed to add alias {alias} to {email}: {e}") from e
@@ -218,7 +276,7 @@ class GoogleAdminClient:
     def list_aliases(self, email: str) -> list[str]:
         """List all aliases for a user."""
         try:
-            resp = self._admin().users().aliases().list(userKey=email).execute()
+            resp = self._exec(self._admin().users().aliases().list(userKey=email))
             aliases = resp.get("aliases", [])
             return [a.get("alias", "") for a in aliases if a.get("alias")]
         except HttpError as e:
@@ -229,10 +287,10 @@ class GoogleAdminClient:
     def remove_alias(self, email: str, alias: str) -> bool:
         """Remove email alias from a user."""
         try:
-            self._admin().users().aliases().delete(userKey=email, alias=alias).execute()
+            self._exec(self._admin().users().aliases().delete(userKey=email, alias=alias))
             return True
         except HttpError as e:
-            payload = _http_error_payload(e)
+            payload = http_error_payload(e)
             if "not found" in payload:
                 return True
             raise GoogleAdminError(f"failed to remove alias {alias}: {e}") from e
@@ -244,14 +302,14 @@ class GoogleAdminClient:
         try:
             from googleapiclient.discovery import build as _build
             licensing = _build("licensing", "v1", credentials=self._auth.get_credentials())
-            licensing.licenseAssignments().insert(
+            self._exec(licensing.licenseAssignments().insert(
                 productId=product_id,
                 skuId=sku_id,
                 body={"userId": email},
-            ).execute()
+            ))
             return True
         except HttpError as e:
-            payload = _http_error_payload(e)
+            payload = http_error_payload(e)
             if "duplicate" in payload or "already" in payload:
                 return True
             raise GoogleAdminError(f"failed to assign license to {email}: {e}") from e
@@ -266,10 +324,10 @@ class GoogleAdminClient:
                 body["name"] = name
             if description:
                 body["description"] = description
-            self._admin().groups().insert(body=body).execute()
+            self._exec(self._admin().groups().insert(body=body))
             return True
         except HttpError as e:
-            if _is_duplicate_error(e):
+            if is_duplicate_error(e):
                 return True
             raise GoogleAdminError(f"failed to create group {email}: {e}") from e
         except (TimeoutError, OSError) as e:
@@ -284,7 +342,7 @@ class GoogleAdminClient:
             groups: list[dict[str, Any]] = []
             req = self._admin().groups().list(**kwargs)
             while req is not None:
-                resp = req.execute()
+                resp = self._exec(req)
                 groups.extend(resp.get("groups") or [])
                 req = self._admin().groups().list_next(req, resp)
             return groups
@@ -296,13 +354,13 @@ class GoogleAdminClient:
     def add_group_member(self, group_email: str, member_email: str, role: str = "MEMBER") -> bool:
         """Add member to a group. Idempotent."""
         try:
-            self._admin().members().insert(
+            self._exec(self._admin().members().insert(
                 groupKey=group_email,
                 body={"email": member_email, "role": role},
-            ).execute()
+            ))
             return True
         except HttpError as e:
-            if _is_duplicate_error(e):
+            if is_duplicate_error(e):
                 return True
             raise GoogleAdminError(f"failed to add {member_email} to {group_email}: {e}") from e
         except (TimeoutError, OSError) as e:
@@ -311,10 +369,10 @@ class GoogleAdminClient:
     def remove_group_member(self, group_email: str, member_email: str) -> bool:
         """Remove member from a group."""
         try:
-            self._admin().members().delete(groupKey=group_email, memberKey=member_email).execute()
+            self._exec(self._admin().members().delete(groupKey=group_email, memberKey=member_email))
             return True
         except HttpError as e:
-            payload = _http_error_payload(e)
+            payload = http_error_payload(e)
             if "not found" in payload:
                 return True
             raise GoogleAdminError(f"failed to remove {member_email} from {group_email}: {e}") from e
@@ -327,7 +385,7 @@ class GoogleAdminClient:
             members: list[dict[str, Any]] = []
             req = self._admin().members().list(groupKey=group_email)
             while req is not None:
-                resp = req.execute()
+                resp = self._exec(req)
                 members.extend(resp.get("members") or [])
                 req = self._admin().members().list_next(req, resp)
             return members
@@ -356,47 +414,10 @@ class GoogleAdminClient:
                         ]
             if not body:
                 return False
-            self._admin().users().update(userKey=email, body=body).execute()
+            self._exec(self._admin().users().update(userKey=email, body=body))
             return True
         except HttpError as e:
             raise GoogleAdminError(f"failed to update {email}: {e}") from e
         except (TimeoutError, OSError) as e:
             raise GoogleAdminError(f"network error updating {email}: {e}") from e
 
-
-def _is_duplicate_error(err: Any) -> bool:
-    """Detect whether HttpError represents an already-exists / duplicate condition.
-
-    Google's "already exists" errors come as HTTP 409 OR HTTP 400 with various
-    body shapes ("already exists", "duplicate", "entityAlreadyExists"). The
-    body is in `err.content` (bytes), not str(err), so we sniff both.
-    """
-    status = getattr(err, "status_code", None) or getattr(
-        getattr(err, "resp", None), "status", None
-    )
-    payload = _http_error_payload(err)
-    return (
-        status == 409
-        or "already exists" in payload
-        or "duplicate" in payload
-        or "entityalreadyexists" in payload
-    )
-
-
-def _http_error_payload(err: Any) -> str:
-    parts: list[str] = []
-    content = getattr(err, "content", None)
-    if isinstance(content, bytes | bytearray):
-        with contextlib.suppress(UnicodeDecodeError, AttributeError):
-            parts.append(content.decode("utf-8", errors="replace"))
-    elif isinstance(content, str):
-        parts.append(content)
-
-    resp = getattr(err, "resp", None)
-    if resp is not None:
-        reason = getattr(resp, "reason", None)
-        if isinstance(reason, str):
-            parts.append(reason)
-
-    parts.append(repr(err))
-    return " ".join(parts).lower()

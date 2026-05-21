@@ -12,6 +12,8 @@ from googleapiclient.discovery import build
 
 from gsm.core.config import Settings
 
+__all__ = ["AuthError", "OAuthDesktopAuth", "detect_oauth_client_file"]
+
 
 class AuthError(RuntimeError):
     pass

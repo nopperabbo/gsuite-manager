@@ -5,6 +5,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel, Field, SecretStr
 
+__all__ = ["AccountSpec", "UserRecord", "UserStatus"]
+
 
 class UserStatus(StrEnum):
     PENDING = "pending"

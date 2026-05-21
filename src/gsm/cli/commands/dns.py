@@ -10,6 +10,8 @@ from rich.console import Console
 
 from gsm.cli._shared import batch_progress, get_context
 
+__all__ = ["dns_apply_command"]
+
 console = Console()
 
 

@@ -18,6 +18,8 @@ import dns.resolver
 
 from gsm.core.config import Settings
 
+__all__ = ["DnsCheckResult", "wait_for_txt"]
+
 
 @dataclass(frozen=True)
 class DnsCheckResult:

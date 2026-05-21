@@ -32,6 +32,8 @@ from gsm.models.results import ItemResult
 from gsm.models.user import AccountSpec, UserRecord, UserStatus
 from gsm.state.ledger import Ledger
 
+__all__ = ["UserBulkCreator", "create_users", "parse_akun_file"]
+
 
 def parse_akun_file(path: Path) -> list[AccountSpec]:
     """Parse `akun.txt` format: `email | password | extra_code` (one per line).
@@ -162,10 +164,16 @@ def create_users(
     results: list[ItemResult] = []
     total = len(accounts)
     for idx, account in enumerate(accounts):
-        result = creator.run(account)
+        try:
+            result = creator.run(account)
+        except KeyboardInterrupt:
+            break
         results.append(result)
         if on_progress is not None:
             on_progress(idx + 1, total, account.email, result)
         if idx < total - 1 and delay > 0:
-            time.sleep(delay)
+            try:
+                time.sleep(delay)
+            except KeyboardInterrupt:
+                break
     return results

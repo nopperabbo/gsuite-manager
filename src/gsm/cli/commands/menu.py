@@ -2,12 +2,12 @@
 
 from __future__ import annotations
 
-from pathlib import Path
-
 import typer
 from rich.console import Console
 from rich.panel import Panel
 from rich.prompt import Prompt
+
+__all__ = ["MENU_ITEMS", "menu_command"]
 
 console = Console()
 
@@ -142,18 +142,14 @@ def _run_submenu(choice: str, ctx: typer.Context, app: typer.Typer) -> None:
         apply_now = Confirm.ask("Langsung create ke Workspace?", default=True)
         save_file = Prompt.ask("Save credentials ke file?", default="generated-creds.txt")
 
-        args = ["users", "gen", "--domain", domain, "--count", str(count)]
-        if fixed_pw:
-            args.extend(["--fixed-password", fixed_pw])
-        if apply_now:
-            args.append("--apply")
-        if save_file:
-            args.extend(["--output", save_file])
+        from gsm.cli.commands.users import users_gen
 
-        import subprocess
-        import sys
-        gsm_bin = str(Path(sys.executable).parent / "gsm")
-        subprocess.run([gsm_bin, *args], check=False)
+        kwargs: dict[str, object] = {"domain": domain, "count": count, "apply_now": apply_now}
+        if fixed_pw:
+            kwargs["fixed_password"] = fixed_pw
+        if save_file:
+            kwargs["output"] = Path(save_file)
+        ctx.invoke(users_gen, **kwargs)
 
     elif choice == "4":
         domain = Prompt.ask("Domain (atau path ke file emails)")
@@ -308,62 +304,78 @@ def _run_submenu(choice: str, ctx: typer.Context, app: typer.Typer) -> None:
 
     elif choice == "9":
         action = Prompt.ask("Action", choices=["create", "list", "add-member", "members"], default="list")
-        import subprocess
-        import sys
-        gsm_bin = str(Path(sys.executable).parent / "gsm")
+        from gsm.cli.commands.groups import (
+            groups_add_member,
+            groups_create,
+            groups_list,
+            groups_members,
+        )
+
         if action == "create":
             email = Prompt.ask("Group email (e.g. all@domain.tech)")
             name = Prompt.ask("Display name (optional)", default="")
-            args = ["groups", "create", email]
-            if name:
-                args.extend(["--name", name])
-            subprocess.run([gsm_bin, *args], check=False)
+            ctx.invoke(groups_create, email=email, name=name or None)
         elif action == "list":
             domain = Prompt.ask("Domain (kosong = semua)", default="")
-            args = ["groups", "list"]
-            if domain:
-                args.extend(["--domain", domain])
-            subprocess.run([gsm_bin, *args], check=False)
+            ctx.invoke(groups_list, domain=domain or None)
         elif action == "add-member":
             group = Prompt.ask("Group email")
             member = Prompt.ask("Member email")
-            subprocess.run([gsm_bin, "groups", "add-member", group, "--member", member], check=False)
+            ctx.invoke(groups_add_member, group=group, member=member)
         elif action == "members":
             group = Prompt.ask("Group email")
-            subprocess.run([gsm_bin, "groups", "members", group], check=False)
+            ctx.invoke(groups_members, group=group)
 
-    elif choice in ("10", "11", "12", "13", "14", "15", "16", "17", "18", "19"):
-        _dispatch_via_subprocess(choice)
+    elif choice == "10":
+        from gsm.cli.commands.audit import audit_command
 
+        ctx.invoke(audit_command)
 
-def _dispatch_via_subprocess(choice: str) -> None:
-    """Run gsm subcommands via subprocess for proper signal/exit handling."""
-    import subprocess
-    import sys
+    elif choice == "11":
+        from gsm.cli.commands.health import health_command
 
-    cmd_map = {
-        "10": ["audit"],
-        "11": ["health"],
-        "12": ["check-expiry"],
-        "13": ["domains", "list"],
-        "14": ["users", "list"],
-        "15": ["users", "audit"],
-        "16": ["dns-apply"],
-        "17": ["users", "move"],
-        "18": ["ledger", "stats"],
-        "19": ["doctor"],
-    }
-    args = list(cmd_map[choice])
-    if choice == "16":
+        ctx.invoke(health_command)
+
+    elif choice == "12":
+        from gsm.cli.commands.expiry import check_expiry_command
+
+        ctx.invoke(check_expiry_command)
+
+    elif choice == "13":
+        from gsm.cli.commands.domains import domains_list
+
+        ctx.invoke(domains_list)
+
+    elif choice == "14":
+        from gsm.cli.commands.users import users_list
+
+        ctx.invoke(users_list)
+
+    elif choice == "15":
+        days = Prompt.ask("Inactive days threshold", default="30")
+        from gsm.cli.commands.users import users_audit
+
+        ctx.invoke(users_audit, inactive_days=int(days))
+
+    elif choice == "16":
         tpl = Prompt.ask("Path ke YAML template")
-        args.append(tpl)
+        from gsm.cli.commands.dns import dns_apply_command
+
+        ctx.invoke(dns_apply_command, template=Path(tpl))
+
     elif choice == "17":
         ou = Prompt.ask("OU path (e.g. /Sales)")
         domain = Prompt.ask("Domain")
-        args.extend(["--ou", ou, "--domain", domain])
-    elif choice == "15":
-        days = Prompt.ask("Inactive days threshold", default="30")
-        args.extend(["--inactive-days", days])
+        from gsm.cli.commands.users import users_move
 
-    gsm_bin = str(Path(sys.executable).parent / "gsm")
-    subprocess.run([gsm_bin, *args], check=False)
+        ctx.invoke(users_move, ou=ou, domain=domain)
+
+    elif choice == "18":
+        from gsm.cli.commands.ledger import ledger_stats
+
+        ctx.invoke(ledger_stats)
+
+    elif choice == "19":
+        from gsm.cli.commands.doctor import doctor_command
+
+        ctx.invoke(doctor_command)

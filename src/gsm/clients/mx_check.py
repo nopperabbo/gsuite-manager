@@ -29,6 +29,8 @@ import dns.resolver
 from gsm.core.config import Settings
 from gsm.core.logging import get_logger
 
+__all__ = ["EXPECTED_GOOGLE_MX", "MxCheckResult", "MxRecord", "MxStatus", "check_mx"]
+
 # Expected Google Workspace MX records (host, priority).
 # Source: https://support.google.com/a/answer/174125
 EXPECTED_GOOGLE_MX: tuple[tuple[str, int], ...] = (

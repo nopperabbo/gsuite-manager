@@ -5,40 +5,18 @@ Handles TXT token retrieval and DNS_TXT verification flow.
 
 from __future__ import annotations
 
-import contextlib
 from typing import Any
 
 from googleapiclient.errors import HttpError
 
+from gsm.clients._google_errors import http_error_payload
 from gsm.core.auth import OAuthDesktopAuth
+
+__all__ = ["GoogleVerifyClient", "GoogleVerifyError"]
 
 
 class GoogleVerifyError(RuntimeError):
     """Raised when Site Verification API returns a non-recoverable error."""
-
-
-def _http_error_payload(err: Any) -> str:
-    """Extract a lowercase searchable string from HttpError (body + reason + repr).
-
-    Google API errors often have the meaningful detail in the response body
-    (bytes), not the str(e) repr. We concatenate everything we can read.
-    """
-    parts: list[str] = []
-    content = getattr(err, "content", None)
-    if isinstance(content, bytes | bytearray):
-        with contextlib.suppress(UnicodeDecodeError, AttributeError):
-            parts.append(content.decode("utf-8", errors="replace"))
-    elif isinstance(content, str):
-        parts.append(content)
-
-    resp = getattr(err, "resp", None)
-    if resp is not None:
-        reason = getattr(resp, "reason", None)
-        if isinstance(reason, str):
-            parts.append(reason)
-
-    parts.append(repr(err))
-    return " ".join(parts).lower()
 
 
 class GoogleVerifyClient:
@@ -100,7 +78,7 @@ class GoogleVerifyClient:
             ).execute()
             return True
         except HttpError as e:
-            payload = _http_error_payload(e)
+            payload = http_error_payload(e)
             if "already verified" in payload:
                 return True
             raise GoogleVerifyError(

@@ -10,6 +10,8 @@ from typing import Any
 from gsm.models.domain import DomainRecord, DomainStatus
 from gsm.models.user import UserRecord
 
+__all__ = ["LEDGER_VERSION", "Ledger"]
+
 LEDGER_VERSION = 1
 
 

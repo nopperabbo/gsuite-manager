@@ -11,6 +11,8 @@ from rich.table import Table
 
 from gsm.cli._shared import get_context
 
+__all__ = ["ledger_app", "ledger_archive", "ledger_stats"]
+
 ledger_app = typer.Typer(name="ledger", no_args_is_help=True, help="Manage the local ledger.")
 console = Console()
 

@@ -9,12 +9,15 @@ from rich.table import Table
 from gsm.cli._shared import get_context
 from gsm.models.constants import GOOGLE_MX_HOSTS
 
+__all__ = ["health_command"]
+
 console = Console()
 
 
 def health_command(
     ctx: typer.Context,
     domain: str | None = typer.Option(None, "--domain", "-d", help="Check single domain."),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON."),
 ) -> None:
     """Check DNS health: MX records, TXT verification, NS pointing to CF."""
     import dns.resolver
@@ -77,6 +80,21 @@ def health_command(
                 issues.append((d, "WARN", p))
         else:
             healthy += 1
+
+    if json_output:
+        import json
+
+        data = {
+            "healthy": healthy,
+            "issues_count": len(set(i[0] for i in issues)),
+            "total": len(targets),
+            "issues": [
+                {"domain": d, "severity": sev, "problem": prob}
+                for d, sev, prob in issues
+            ],
+        }
+        typer.echo(json.dumps(data, indent=2))
+        return
 
     if issues:
         table = Table(title=f"DNS Issues ({len(issues)} problems in {len(set(i[0] for i in issues))} domains)")

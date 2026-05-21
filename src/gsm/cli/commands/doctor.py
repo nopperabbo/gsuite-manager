@@ -24,6 +24,8 @@ from gsm.clients.cloudflare import CF_BASE_URL
 from gsm.core.auth import detect_oauth_client_file
 from gsm.core.config import load_settings
 
+__all__ = ["CheckResult", "doctor_command"]
+
 
 @dataclass
 class CheckResult:

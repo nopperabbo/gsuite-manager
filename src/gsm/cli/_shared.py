@@ -20,6 +20,17 @@ from gsm.core.logging import configure_logging
 from gsm.models.results import ItemResult, ResultKind
 from gsm.state.ledger import Ledger
 
+__all__ = [
+    "Context",
+    "batch_progress",
+    "console",
+    "err_console",
+    "get_context",
+    "read_lines",
+    "render_interrupted_summary",
+    "render_results",
+]
+
 console = Console()
 err_console = Console(stderr=True)
 
@@ -144,6 +155,22 @@ def render_results(results: Iterable[ItemResult], *, title: str) -> None:
         f"[cyan]skipped[/cyan]={skipped}  "
         f"[yellow]partial[/yellow]={partial}  "
         f"[red]failed[/red]={failed}"
+    )
+
+
+def render_interrupted_summary(results: list[ItemResult], total: int) -> None:
+    """Print partial results summary after SIGINT interruption."""
+    from gsm.models.results import ResultKind
+
+    completed = len(results)
+    success = sum(1 for r in results if r.kind is ResultKind.SUCCESS)
+    failed = sum(1 for r in results if r.kind is ResultKind.FAILED)
+    console.print(
+        f"\n[bold yellow]⚠️  Interrupted (Ctrl+C). "
+        f"Completed {completed}/{total}:[/bold yellow]  "
+        f"[green]success[/green]={success}  "
+        f"[red]failed[/red]={failed}  "
+        f"[dim]remaining={total - completed}[/dim]"
     )
 
 

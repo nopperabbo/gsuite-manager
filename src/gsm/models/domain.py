@@ -5,6 +5,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
+__all__ = ["DomainRecord", "DomainStatus"]
+
 
 class DomainStatus(StrEnum):
     PENDING = "pending"

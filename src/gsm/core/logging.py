@@ -11,6 +11,8 @@ from rich.logging import RichHandler
 
 from gsm.core.config import Settings
 
+__all__ = ["configure_logging", "get_logger", "legacy_log"]
+
 LEGACY_PREFIXES: dict[str, str] = {
     "ok": "[+]",
     "fail": "[-]",

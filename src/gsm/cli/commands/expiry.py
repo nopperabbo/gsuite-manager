@@ -10,6 +10,8 @@ from rich.table import Table
 
 from gsm.cli._shared import get_context
 
+__all__ = ["check_expiry_command"]
+
 console = Console()
 
 
@@ -17,6 +19,7 @@ def check_expiry_command(
     ctx: typer.Context,
     days: int = typer.Option(30, "--days", "-d", help="Alert threshold (days until expiry)."),
     domain: str | None = typer.Option(None, "--domain", help="Check single domain."),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON."),
 ) -> None:
     """Check domain expiry dates. Alert domains expiring within --days."""
     import json
@@ -69,6 +72,23 @@ def check_expiry_command(
             errors.append((d, str(e)[:80]))
         except Exception as e:
             errors.append((d, str(e)[:80]))
+
+    if json_output:
+        import json as json_mod
+
+        data = {
+            "ok": ok_count,
+            "expiring_count": len(expiring),
+            "errors_count": len(errors),
+            "threshold_days": days,
+            "expiring": [
+                {"domain": d, "expires": exp.isoformat(), "days_left": dl}
+                for d, exp, dl in sorted(expiring, key=lambda x: x[2])
+            ],
+            "errors": [{"domain": d, "error": msg} for d, msg in errors],
+        }
+        typer.echo(json_mod.dumps(data, indent=2))
+        return
 
     if expiring:
         table = Table(title=f"⚠️  Expiring within {days} days ({len(expiring)} domains)")

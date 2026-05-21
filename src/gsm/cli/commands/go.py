@@ -12,6 +12,8 @@ from rich.panel import Panel
 from gsm.cli._shared import batch_progress, get_context, render_results
 from gsm.models.results import ResultKind
 
+__all__ = ["go_command"]
+
 console = Console()
 
 

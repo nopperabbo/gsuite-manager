@@ -10,6 +10,15 @@ from rich.table import Table
 
 from gsm.cli._shared import err_console, get_context, read_lines
 
+__all__ = [
+    "groups_add_member",
+    "groups_app",
+    "groups_create",
+    "groups_list",
+    "groups_members",
+    "groups_remove_member",
+]
+
 groups_app = typer.Typer(
     name="groups",
     help="Manage Google Workspace groups (mailing lists).",

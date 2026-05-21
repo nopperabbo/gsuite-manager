@@ -30,6 +30,17 @@ from faker import Faker
 
 from gsm.core.logging import get_logger
 
+__all__ = [
+    "DEFAULT_COLLISION_FALLBACK",
+    "DEFAULT_PASSWORD_LENGTH",
+    "DEFAULT_PATTERN",
+    "GeneratedAccount",
+    "GeneratorError",
+    "generate_accounts",
+    "generate_password",
+    "validate_pattern",
+]
+
 DEFAULT_PATTERN: Final[str] = "{first}.{last}@{domain}"
 DEFAULT_COLLISION_FALLBACK: Final[str] = "{first}{last_initial}{n}@{domain}"
 DEFAULT_PASSWORD_LENGTH: Final[int] = 12

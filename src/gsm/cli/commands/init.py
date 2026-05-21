@@ -24,6 +24,8 @@ from rich.text import Text
 from gsm.cli._shared import console, err_console
 from gsm.core.auth import detect_oauth_client_file
 
+__all__ = ["init_command", "setup_command"]
+
 CF_DASHBOARD_URL = "https://dash.cloudflare.com/profile/api-tokens"
 GCP_OAUTH_GUIDE_URL = "https://console.cloud.google.com/apis/credentials"
 DOCS_GCP_GUIDE = "docs/SETUP_GOOGLE_OAUTH.md"

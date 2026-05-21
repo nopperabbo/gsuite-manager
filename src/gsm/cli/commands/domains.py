@@ -12,6 +12,7 @@ from gsm.cli._shared import (
     err_console,
     get_context,
     read_lines,
+    render_interrupted_summary,
     render_results,
 )
 from gsm.clients.cloudflare import CloudflareError
@@ -28,6 +29,15 @@ from gsm.workflows.domain_import import (
     zone_names_only,
 )
 from gsm.workflows.domain_onboarding import DomainOnboarder, onboard_domains
+
+__all__ = [
+    "domains_add",
+    "domains_app",
+    "domains_check_mx",
+    "domains_import",
+    "domains_list",
+    "domains_verify",
+]
 
 domains_app = typer.Typer(
     name="domains",
@@ -46,9 +56,13 @@ def domains_add(
     file: Path | None = typer.Option(
         None, "--file", "-f", help="Read domains from file (one per line)."
     ),
+    dry_run: bool = typer.Option(False, "--dry-run", help="Preview tanpa apply."),
 ) -> None:
     """Onboard one or more domains end-to-end (add -> CF zone -> DNS -> verify)."""
     targets = _collect_domains(domain, file)
+    if dry_run:
+        console.print(f"[dim]--dry-run: would onboard {len(targets)} domain(s): {', '.join(targets[:5])}{'...' if len(targets) > 5 else ''}[/dim]")
+        return
     runtime = get_context(ctx)
     with batch_progress(f"Onboarding {len(targets)} domain(s)", len(targets)) as on_progress:
         results = onboard_domains(
@@ -60,6 +74,9 @@ def domains_add(
             verify=runtime.verify,
             on_progress=on_progress,
         )
+    if len(results) < len(targets):
+        render_interrupted_summary(results, len(targets))
+        raise typer.Exit(code=130)
     render_results(results, title=f"Onboarding {len(targets)} domain(s)")
     if any(r.kind is ResultKind.FAILED for r in results):
         raise typer.Exit(code=1)

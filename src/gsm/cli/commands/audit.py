@@ -20,6 +20,8 @@ from gsm.clients.cloudflare import CloudflareError
 from gsm.clients.google_admin import GoogleAdminError
 from gsm.core.errors import humanize
 
+__all__ = ["audit_command"]
+
 console = Console()
 
 
