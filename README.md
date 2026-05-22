@@ -1,11 +1,11 @@
 # gsuite-manager (`gsm`)
 
 [![CI](https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml)
-[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/downloads/)
-[![Coverage 88%](https://img.shields.io/badge/coverage-88%25-brightgreen.svg)](tests/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg)](https://github.com/astral-sh/ruff)
-[![Typed: mypy strict](https://img.shields.io/badge/typed-mypy%20strict-blue.svg)](https://mypy-lang.org/)
+[![Python 3.11+](https://img.shields.io/pypi/pyversions/gsuite-manager?style=flat-square)](https://www.python.org/downloads/)
+[![codecov](https://codecov.io/gh/nopperabbo/gsuite-manager/graph/badge.svg)](https://codecov.io/gh/nopperabbo/gsuite-manager)
+[![License: MIT](https://img.shields.io/github/license/nopperabbo/gsuite-manager?style=flat-square)](LICENSE)
+[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg?style=flat-square)](https://github.com/astral-sh/ruff)
+[![Typed: mypy strict](https://img.shields.io/badge/typed-mypy%20strict-blue.svg?style=flat-square)](https://mypy-lang.org/)
 
 **Automate Google Workspace + Cloudflare in one CLI.** Onboard domains, create users, manage DNS — idempotent, tested, production-ready.
 
@@ -35,6 +35,17 @@ $ gsm
 │    0. Exit                                     │
 ╰────────────────────────────────────────────────╯
 ```
+
+## Why gsuite-manager?
+
+| | Manual (Admin Console + CF Dashboard) | gsuite-manager |
+|---|---|---|
+| Onboard 10 domains | ~2 hours clicking | `gsm domains add --file domains.txt` → 3 min |
+| Create 50 users | Copy-paste hell | `gsm users gen --count 50 --apply` → 30 sec |
+| Audit DNS health | Check each domain manually | `gsm health` → instant report |
+| Rotate credentials | Remember where everything is | `gsm setup` → guided wizard |
+
+**No SDK to learn. No YAML to write. No API docs to read.** Just `gsm` and pick a number.
 
 ## Features
 
@@ -106,6 +117,7 @@ gsm go
 
 | Doc | Description |
 |---|---|
+| [Usage Guide (English)](docs/USAGE.md) | Complete command reference |
 | [Tutorial (Bahasa Indonesia)](docs/CARA_PAKE.md) | Full usage guide |
 | [How to Test](docs/CARA_TEST.md) | Tier 1 smoke + Tier 2 real test |
 | [Google OAuth Setup](docs/SETUP_GOOGLE_OAUTH.md) | Get credentials.json step-by-step |
@@ -157,7 +169,13 @@ src/gsm/
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=nopperabbo/gsuite-manager&type=Date)](https://star-history.com/#nopperabbo/gsuite-manager&Date)
+<a href="https://star-history.com/#nopperabbo/gsuite-manager&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=nopperabbo/gsuite-manager&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=nopperabbo/gsuite-manager&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=nopperabbo/gsuite-manager&type=Date" />
+ </picture>
+</a>
 
 ## License
 

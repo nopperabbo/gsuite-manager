@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [Unreleased]
+
+### Added
+
+- Dynamic Codecov coverage badge
+- Windows support in CI matrix
+- `.editorconfig` for contributor consistency
+- `.pre-commit-config.yaml` for automated code quality
+- PyPI publish step in release workflow
+- VHS tape file for terminal demo recording
+- English usage documentation (`docs/USAGE.md`)
+- "Why gsuite-manager?" comparison section in README
+- Dark/light mode responsive Star History chart
+
+### Changed
+
+- Improved CONTRIBUTING.md with Code of Conduct link and first-timer guide
+
 ## [0.1.0] - 2026-05-16
 
 ### Added

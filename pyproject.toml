@@ -41,7 +41,8 @@ dependencies = [
 Homepage = "https://github.com/nopperabbo/gsuite-manager"
 Repository = "https://github.com/nopperabbo/gsuite-manager"
 Issues = "https://github.com/nopperabbo/gsuite-manager/issues"
-Documentation = "https://github.com/nopperabbo/gsuite-manager/blob/main/docs/CARA_PAKE.md"
+Documentation = "https://github.com/nopperabbo/gsuite-manager/blob/main/docs/USAGE.md"
+Changelog = "https://github.com/nopperabbo/gsuite-manager/blob/main/CHANGELOG.md"
 
 [project.optional-dependencies]
 dev = [

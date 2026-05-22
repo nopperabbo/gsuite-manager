@@ -1,0 +1,8 @@
+# Commits that are pure formatting/refactoring — ignore in git blame
+# Usage: git config blame.ignoreRevsFile .git-blame-ignore-revs
+
+# SSS-tier GitHub infrastructure (templates, badges, docs)
+4a07061
+
+# Source code refactor (users module split, retry logic, error handling)
+88130d1
