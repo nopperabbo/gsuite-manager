@@ -1,0 +1,25 @@
+title: "Questions & Help"
+labels: ["question"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Before asking
+
+        - Check the [Usage Guide](https://github.com/nopperabbo/gsuite-manager/blob/main/docs/USAGE.md)
+        - Check [existing discussions](https://github.com/nopperabbo/gsuite-manager/discussions)
+        - Check [closed issues](https://github.com/nopperabbo/gsuite-manager/issues?q=is%3Aissue+is%3Aclosed)
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      description: What do you need help with?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: What are you trying to accomplish? What have you tried?

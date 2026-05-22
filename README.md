@@ -1,40 +1,39 @@
 # gsuite-manager (`gsm`)
 
-[![CI](https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml/badge.svg)](https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml)
-[![Python 3.11+](https://img.shields.io/pypi/pyversions/gsuite-manager?style=flat-square)](https://www.python.org/downloads/)
-[![codecov](https://codecov.io/gh/nopperabbo/gsuite-manager/graph/badge.svg)](https://codecov.io/gh/nopperabbo/gsuite-manager)
-[![License: MIT](https://img.shields.io/github/license/nopperabbo/gsuite-manager?style=flat-square)](LICENSE)
-[![Code style: ruff](https://img.shields.io/badge/code%20style-ruff-000000.svg?style=flat-square)](https://github.com/astral-sh/ruff)
-[![Typed: mypy strict](https://img.shields.io/badge/typed-mypy%20strict-blue.svg?style=flat-square)](https://mypy-lang.org/)
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/logo-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="docs/assets/logo.svg">
+    <img alt="gsuite-manager" src="docs/assets/logo.svg" width="400">
+  </picture>
+</p>
 
-**Automate Google Workspace + Cloudflare in one CLI.** Onboard domains, create users, manage DNS — idempotent, tested, production-ready.
+<p align="center">
+  <a href="https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml"><img src="https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/pypi/pyversions/gsuite-manager?style=flat-square" alt="Python 3.11+"></a>
+  <a href="https://codecov.io/gh/nopperabbo/gsuite-manager"><img src="https://codecov.io/gh/nopperabbo/gsuite-manager/graph/badge.svg" alt="codecov"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/nopperabbo/gsuite-manager?style=flat-square" alt="License: MIT"></a>
+  <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-000000.svg?style=flat-square" alt="Code style: ruff"></a>
+  <a href="https://mypy-lang.org/"><img src="https://img.shields.io/badge/typed-mypy%20strict-blue.svg?style=flat-square" alt="Typed: mypy strict"></a>
+</p>
 
-```
-$ gsm
+<p align="center">
+  <strong>Automate Google Workspace + Cloudflare in one CLI.</strong><br>
+  Onboard domains, create users, manage DNS — idempotent, tested, production-ready.
+</p>
 
-╭─────────────── gsm - Menu Utama ───────────────╮
-│    1. Onboard domains                          │
-│    2. Create users (dari file akun.txt)        │
-│    3. Create users (auto-generate, tanpa file) │
-│    4. Reset password (bulk)                    │
-│    5. Suspend users                            │
-│    6. Unsuspend users                          │
-│    7. Delete users                             │
-│    8. Email aliases (add/list/remove)          │
-│    9. Groups / mailing list                    │
-│   10. Audit: CF vs Workspace gap               │
-│   11. Health check DNS                         │
-│   12. Check domain expiry                      │
-│   13. List domains                             │
-│   14. List users                               │
-│   15. Inactive user audit                      │
-│   16. Apply DNS template                       │
-│   17. Move users to OU                         │
-│   18. Ledger stats                             │
-│   19. Doctor (health check config)             │
-│    0. Exit                                     │
-╰────────────────────────────────────────────────╯
-```
+<p align="center">
+  <a href="docs/USAGE.md">Documentation</a> •
+  <a href="CONTRIBUTING.md">Contributing</a> •
+  <a href="https://github.com/nopperabbo/gsuite-manager/discussions">Discussions</a>
+</p>
+
+---
+
+<!-- Hero terminal screenshot -->
+<p align="center">
+  <img src="docs/assets/terminal.svg" alt="gsm terminal menu" width="700">
+</p>
 
 ## Why gsuite-manager?
 
@@ -166,6 +165,38 @@ src/gsm/
 ├── state/       # JSON ledger (atomic writes, corrupt recovery)
 └── workflows/   # Domain onboarding, user creation orchestration
 ```
+
+## FAQ
+
+<details>
+<summary><b>Is this safe for production?</b></summary>
+
+Yes. All operations are idempotent (safe to re-run), use atomic writes for state, and include dry-run mode. The tool has 90%+ test coverage with strict type checking.
+</details>
+
+<details>
+<summary><b>Does it work on Windows?</b></summary>
+
+Yes. CI runs on Ubuntu, macOS, and Windows. Use PowerShell for activation: `.venv\Scripts\Activate.ps1`
+</details>
+
+<details>
+<summary><b>Can I use this without Cloudflare?</b></summary>
+
+Partially. User management commands (`gsm users *`, `gsm groups *`) work with just Google Workspace. Domain onboarding and DNS features require Cloudflare.
+</details>
+
+<details>
+<summary><b>How do I pronounce "gsm"?</b></summary>
+
+"gee-ess-em" — the CLI command. The full project name is "gsuite-manager" (gee-suite manager).
+</details>
+
+<details>
+<summary><b>What Google API scopes are required?</b></summary>
+
+Only 3 scopes: `admin.directory.user`, `admin.directory.group`, `admin.directory.domain` — minimized for security.
+</details>
 
 ## Star History
 

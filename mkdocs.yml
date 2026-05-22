@@ -1,0 +1,71 @@
+site_name: gsuite-manager
+site_url: https://nopperabbo.github.io/gsuite-manager
+site_description: CLI tool for automating Google Workspace + Cloudflare domain & user management
+site_author: nopperabbo
+repo_url: https://github.com/nopperabbo/gsuite-manager
+repo_name: nopperabbo/gsuite-manager
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: blue
+      accent: orange
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: blue
+      accent: orange
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.sections
+    - navigation.expand
+    - content.code.copy
+    - content.code.annotate
+    - search.suggest
+    - search.highlight
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+
+markdown_extensions:
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: USAGE.md
+    - Google OAuth Setup: SETUP_GOOGLE_OAUTH.md
+    - CF Token Rotation: QUICK_ROTATE_CF_TOKEN.md
+  - Guide:
+    - Tutorial (ID): CARA_PAKE.md
+    - Testing: CARA_TEST.md
+    - Production Runbook: PRODUCTION_RUNBOOK.md
+  - Reference:
+    - Roadmap: ROADMAP.md
+    - Research: RESEARCH_GAP_ANALYSIS.md
+    - Changelog: ../CHANGELOG.md

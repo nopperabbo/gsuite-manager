@@ -1,0 +1,15 @@
+title: "Show & Tell"
+labels: ["showcase"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Share how you're using gsuite-manager! Screenshots, scripts, workflows — anything goes.
+
+  - type: textarea
+    id: showcase
+    attributes:
+      label: What did you build?
+      description: Share your setup, workflow, or integration
+    validations:
+      required: true

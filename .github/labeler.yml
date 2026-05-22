@@ -1,0 +1,33 @@
+labels:
+  # Type labels
+  - label: "bug"
+    color: "d73a4a"
+    description: "Something isn't working"
+  - label: "feature"
+    color: "a2eeef"
+    description: "New feature or request"
+  - label: "docs"
+    color: "0075ca"
+    description: "Documentation improvements"
+  - label: "chore"
+    color: "e4e669"
+    description: "Maintenance and tooling"
+  - label: "good first issue"
+    color: "7057ff"
+    description: "Good for newcomers"
+
+# Path-based auto-labeling
+"src/gsm/cli/**":
+  - cli
+"src/gsm/clients/**":
+  - api-clients
+"src/gsm/core/**":
+  - core
+"src/gsm/workflows/**":
+  - workflows
+"tests/**":
+  - tests
+"docs/**":
+  - docs
+".github/**":
+  - ci/cd
