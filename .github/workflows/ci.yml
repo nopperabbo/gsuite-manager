@@ -9,6 +9,8 @@ on:
 env:
   NO_COLOR: "1"
   FORCE_COLOR: "0"
+  TERM: "dumb"
+  COLUMNS: "200"
 
 jobs:
   test:
