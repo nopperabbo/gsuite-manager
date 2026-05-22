@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import stat
+import sys
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -273,8 +275,9 @@ class TestUsersGen:
             ],
         )
         assert result.exit_code == 0
-        mode = stat.S_IMODE(out_file.stat().st_mode)
-        assert mode == 0o600, f"expected 0600, got {oct(mode)}"
+        if sys.platform != "win32":
+            mode = stat.S_IMODE(out_file.stat().st_mode)
+            assert mode == 0o600, f"expected 0600, got {oct(mode)}"
 
     def test_invalid_pattern_rejected(self, runner, env_for_cli):
         result = runner.invoke(

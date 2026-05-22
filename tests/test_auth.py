@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import sys
 import threading
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -109,8 +110,9 @@ class TestTokenPersistence:
 
             token_file = tmp_path / "token.json"
             assert token_file.exists()
-            mode = token_file.stat().st_mode & 0o777
-            assert mode == 0o600, f"expected 0o600, got {oct(mode)}"
+            if sys.platform != "win32":
+                mode = token_file.stat().st_mode & 0o777
+                assert mode == 0o600, f"expected 0o600, got {oct(mode)}"
 
 
 class TestServiceBuilders:

@@ -337,12 +337,15 @@ class TestEntryPoint:
         import subprocess
         import sys
 
+        import tempfile
+
+        tmpdir = tempfile.gettempdir()
         check = subprocess.run(
             [sys.executable, "-c", "import gsm"],
             capture_output=True,
             text=True,
             timeout=5,
-            cwd="/tmp",
+            cwd=tmpdir,
         )
         if check.returncode != 0:
             pytest.skip(
@@ -355,7 +358,7 @@ class TestEntryPoint:
             capture_output=True,
             text=True,
             timeout=10,
-            cwd="/tmp",
+            cwd=tmpdir,
         )
         assert proc.returncode == 0
         assert "gsm" in proc.stdout.lower()

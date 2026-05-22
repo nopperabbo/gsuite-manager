@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
@@ -165,7 +166,8 @@ class TestInitWizardFunctions:
         _write_env(env_path, {"GSM_CF_API_TOKEN": "mytoken"})
         content = env_path.read_text()
         assert "GSM_CF_API_TOKEN=mytoken" in content
-        assert env_path.stat().st_mode & 0o777 == 0o600
+        if sys.platform != "win32":
+            assert env_path.stat().st_mode & 0o777 == 0o600
 
     def test_print_summary(self, tmp_path):
         from gsm.cli.commands.init import _print_summary

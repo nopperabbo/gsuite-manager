@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import sys
 from datetime import UTC, datetime, timedelta
 from unittest.mock import MagicMock, patch
 
@@ -230,7 +231,8 @@ class TestUsersCrud:
             )
         assert result.exit_code == 0
         assert out.exists()
-        assert out.stat().st_mode & 0o777 == 0o600
+        if sys.platform != "win32":
+            assert out.stat().st_mode & 0o777 == 0o600
 
     def test_reset_password_no_mode_fails(self, runner, runtime):
         with patch("gsm.cli.commands.users._crud.get_context", return_value=runtime):
