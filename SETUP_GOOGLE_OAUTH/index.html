@@ -1,0 +1,1388 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="CLI tool for automating Google Workspace + Cloudflare domain & user management">
+      
+      
+        <meta name="author" content="nopperabbo">
+      
+      
+        <link rel="canonical" href="https://nopperabbo.github.io/gsuite-manager/SETUP_GOOGLE_OAUTH/">
+      
+      
+        <link rel="prev" href="../USAGE/">
+      
+      
+        <link rel="next" href="../QUICK_ROTATE_CF_TOKEN/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Google OAuth Setup - gsuite-manager</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#setup-google-oauth-desktop-app" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="gsuite-manager" class="md-header__button md-logo" aria-label="gsuite-manager" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            gsuite-manager
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Google OAuth Setup
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/nopperabbo/gsuite-manager" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    nopperabbo/gsuite-manager
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="gsuite-manager" class="md-nav__button md-logo" aria-label="gsuite-manager" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    gsuite-manager
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/nopperabbo/gsuite-manager" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    nopperabbo/gsuite-manager
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../USAGE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google OAuth Setup
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google OAuth Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kenapa-butuh-ini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kenapa butuh ini?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-buka-google-cloud-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Buka Google Cloud Console
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-bikin-project-baru" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Bikin Project Baru
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-enable-2-api-yang-dibutuhkan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Enable 2 API yang Dibutuhkan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Enable 2 API yang Dibutuhkan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cara-enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cara enable:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-setup-oauth-consent-screen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Setup OAuth Consent Screen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-bikin-oauth-client-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Bikin OAuth Client ID
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-6-simpen-file-ke-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Simpen File ke Project
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-7-first-auth-browser-login" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: First Auth (Browser Login)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#app-isnt-verified-ada-tombol-advanced-gak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "App isn't verified" - ada tombol Advanced gak?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-denied-permission_denied" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Access denied" - permission_denied
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redirect_uri_mismatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "redirect_uri_mismatch"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokenjson-expired-kena-revoke" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        token.json expired / kena revoke
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QUICK_ROTATE_CF_TOKEN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CF Token Rotation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CARA_PAKE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial (ID)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CARA_TEST/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PRODUCTION_RUNBOOK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Production Runbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RESEARCH_GAP_ANALYSIS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#kenapa-butuh-ini" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Kenapa butuh ini?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-1-buka-google-cloud-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Buka Google Cloud Console
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-2-bikin-project-baru" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Bikin Project Baru
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-3-enable-2-api-yang-dibutuhkan" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Enable 2 API yang Dibutuhkan
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Enable 2 API yang Dibutuhkan">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cara-enable" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cara enable:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-4-setup-oauth-consent-screen" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Setup OAuth Consent Screen
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-5-bikin-oauth-client-id" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Bikin OAuth Client ID
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-6-simpen-file-ke-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Simpen File ke Project
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#step-7-first-auth-browser-login" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: First Auth (Browser Login)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Troubleshooting">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#app-isnt-verified-ada-tombol-advanced-gak" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "App isn't verified" - ada tombol Advanced gak?
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-denied-permission_denied" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Access denied" - permission_denied
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redirect_uri_mismatch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "redirect_uri_mismatch"
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tokenjson-expired-kena-revoke" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        token.json expired / kena revoke
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#security-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Security Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#quick-checklist" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick Checklist
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="setup-google-oauth-desktop-app">Setup Google OAuth Desktop App<a class="headerlink" href="#setup-google-oauth-desktop-app" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Panduan visual step-by-step buat dapetin file <code>credentials.json</code> yang dibutuhkan <code>gsm</code>.
+Estimasi waktu: <strong>15-30 menit</strong> (sekali setup, gak diulang).</p>
+</blockquote>
+<h2 id="kenapa-butuh-ini">Kenapa butuh ini?<a class="headerlink" href="#kenapa-butuh-ini" title="Permanent link">&para;</a></h2>
+<p><code>gsm</code> perlu akses Google Workspace lo (buat add domain, bikin user, verify ownership). Itu butuh file OAuth credentials yang lo download dari Google Cloud Console.</p>
+<hr />
+<h2 id="step-1-buka-google-cloud-console">Step 1: Buka Google Cloud Console<a class="headerlink" href="#step-1-buka-google-cloud-console" title="Permanent link">&para;</a></h2>
+<p>Buka: <strong>https://console.cloud.google.com</strong></p>
+<p>Login pakai akun <strong>Google Workspace Admin</strong> lo (yang punya akses Admin SDK).</p>
+<blockquote>
+<p><strong>Penting:</strong> Akun ini harus admin Workspace, bukan akun Gmail biasa. Kalo lo gak yakin, cek di https://admin.google.com - kalo bisa login, lo admin.</p>
+</blockquote>
+<hr />
+<h2 id="step-2-bikin-project-baru">Step 2: Bikin Project Baru<a class="headerlink" href="#step-2-bikin-project-baru" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Klik <strong>dropdown project</strong> di pojok kiri-atas (di samping "Google Cloud" logo)</li>
+<li>Di popup yang muncul, klik tombol <strong>"NEW PROJECT"</strong> (kanan-atas)</li>
+<li>Isi:</li>
+<li><strong>Project name:</strong> <code>gsuite-manager</code> (atau nama bebas)</li>
+<li><strong>Organization:</strong> pilih organization Workspace lo</li>
+<li><strong>Location:</strong> biarin default</li>
+<li>Klik <strong>"CREATE"</strong></li>
+<li>Tunggu beberapa detik, lalu <strong>pilih project</strong> itu di dropdown atas</li>
+</ol>
+<hr />
+<h2 id="step-3-enable-2-api-yang-dibutuhkan">Step 3: Enable 2 API yang Dibutuhkan<a class="headerlink" href="#step-3-enable-2-api-yang-dibutuhkan" title="Permanent link">&para;</a></h2>
+<p><code>gsm</code> butuh 2 API:
+- <strong>Admin SDK API</strong> (buat manage domain + user)
+- <strong>Site Verification API</strong> (buat verify ownership domain)</p>
+<h3 id="cara-enable">Cara enable:<a class="headerlink" href="#cara-enable" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Di sidebar kiri, klik <strong>"APIs &amp; Services"</strong> → <strong>"Library"</strong></li>
+<li>Search: <code>Admin SDK API</code></li>
+<li>Klik hasilnya, lalu klik tombol <strong>"ENABLE"</strong> (tunggu sampe selesai)</li>
+<li>Balik ke Library, search: <code>Site Verification API</code></li>
+<li>Klik hasilnya, klik <strong>"ENABLE"</strong></li>
+</ol>
+<blockquote>
+<p>Kalo udah pernah enable, tombolnya bakal jadi "MANAGE" (artinya udah aktif - skip).</p>
+</blockquote>
+<hr />
+<h2 id="step-4-setup-oauth-consent-screen">Step 4: Setup OAuth Consent Screen<a class="headerlink" href="#step-4-setup-oauth-consent-screen" title="Permanent link">&para;</a></h2>
+<p>Sebelum bisa bikin OAuth client, harus setup consent screen dulu.</p>
+<ol>
+<li>Sidebar: <strong>"APIs &amp; Services"</strong> → <strong>"OAuth consent screen"</strong></li>
+<li>Pilih <strong>User Type:</strong></li>
+<li><strong>Internal</strong> kalo lo punya Workspace organization (RECOMMENDED - lebih simpel)</li>
+<li><strong>External</strong> kalo gak punya org / pakai Gmail biasa (perlu approval Google)</li>
+<li>Klik <strong>"CREATE"</strong></li>
+<li>Isi form:</li>
+<li><strong>App name:</strong> <code>gsuite-manager</code> (atau bebas)</li>
+<li><strong>User support email:</strong> email Workspace lo</li>
+<li><strong>Developer contact:</strong> email Workspace lo</li>
+<li>Field lain: bisa di-skip</li>
+<li>Klik <strong>"SAVE AND CONTINUE"</strong></li>
+<li>Di <strong>Scopes</strong> page: klik <strong>"SAVE AND CONTINUE"</strong> (gak perlu add scope di sini, scope diatur di code)</li>
+<li>Di <strong>Test users</strong> page (kalo External): tambahin email lo, klik <strong>"SAVE AND CONTINUE"</strong></li>
+<li>Klik <strong>"BACK TO DASHBOARD"</strong></li>
+</ol>
+<hr />
+<h2 id="step-5-bikin-oauth-client-id">Step 5: Bikin OAuth Client ID<a class="headerlink" href="#step-5-bikin-oauth-client-id" title="Permanent link">&para;</a></h2>
+<p><strong>Ini step inti yang ngehasilin <code>credentials.json</code>.</strong></p>
+<ol>
+<li>Sidebar: <strong>"APIs &amp; Services"</strong> → <strong>"Credentials"</strong></li>
+<li>Klik <strong>"+ CREATE CREDENTIALS"</strong> (tombol biru di atas)</li>
+<li>Pilih <strong>"OAuth client ID"</strong></li>
+<li>Di form:</li>
+<li><strong>Application type:</strong> pilih <strong>"Desktop app"</strong> (PENTING! Bukan Web!)</li>
+<li><strong>Name:</strong> <code>gsuite-manager-cli</code> (atau bebas)</li>
+<li>Klik <strong>"CREATE"</strong></li>
+<li>Popup muncul dengan <strong>Client ID</strong> dan <strong>Client Secret</strong></li>
+<li><strong>Klik "DOWNLOAD JSON"</strong> (tombol di kanan-bawah popup)</li>
+</ol>
+<hr />
+<h2 id="step-6-simpen-file-ke-project">Step 6: Simpen File ke Project<a class="headerlink" href="#step-6-simpen-file-ke-project" title="Permanent link">&para;</a></h2>
+<p>File yang lo download namanya kayak: <code>client_secret_123456789-abcdef.apps.googleusercontent.com.json</code></p>
+<p>Pindahin ke folder project:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Misal lo download ke ~/Downloads</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>mv<span class="w"> </span>~/Downloads/client_secret_*.json<span class="w"> </span>./credentials.json
+<a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+<a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Atau tetep nama aslinya - gsm auto-detect</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>mv<span class="w"> </span>~/Downloads/client_secret_*.json<span class="w"> </span>./
+</code></pre></div>
+<p>Verify:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gsm<span class="w"> </span>doctor
+</code></pre></div>
+<p>Cek di output: <code>oauth_client</code> row harus <strong>PASS</strong>.</p>
+<hr />
+<h2 id="step-7-first-auth-browser-login">Step 7: First Auth (Browser Login)<a class="headerlink" href="#step-7-first-auth-browser-login" title="Permanent link">&para;</a></h2>
+<p>Pertama kali run command yang butuh Google API (mis. <code>gsm domains add</code>), browser bakal kebuka otomatis:</p>
+<ol>
+<li>Login pake akun Workspace Admin lo</li>
+<li><strong>WARNING screen:</strong> "Google hasn't verified this app" → klik <strong>"Advanced"</strong> → <strong>"Go to gsuite-manager (unsafe)"</strong></li>
+<li>Ini muncul karena app lo Internal/Test - aman, ini app lo sendiri</li>
+<li>Setujui semua scope yang diminta:</li>
+<li>Site Verification</li>
+<li>Admin Directory (Domain + User)</li>
+<li>Setelah selesai, browser nampilin "The authentication flow has completed"</li>
+<li>Token otomatis disimpen di <code>token.json</code> - <strong>gak perlu login lagi sampai 7 hari atau token revoked.</strong></li>
+</ol>
+<hr />
+<h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
+<h3 id="app-isnt-verified-ada-tombol-advanced-gak">"App isn't verified" - ada tombol Advanced gak?<a class="headerlink" href="#app-isnt-verified-ada-tombol-advanced-gak" title="Permanent link">&para;</a></h3>
+<p>Kalo consent screen tipe <strong>External</strong> dan App belum di-publish, hanya test users yang bisa login.</p>
+<p><strong>Fix:</strong> balik ke <strong>OAuth consent screen</strong> → tab <strong>Test users</strong> → tambahin email lo.</p>
+<h3 id="access-denied-permission_denied">"Access denied" - permission_denied<a class="headerlink" href="#access-denied-permission_denied" title="Permanent link">&para;</a></h3>
+<p>Akun yang lo pake login bukan Workspace Admin.</p>
+<p><strong>Fix:</strong> Login pake akun yang punya akses ke https://admin.google.com.</p>
+<h3 id="redirect_uri_mismatch">"redirect_uri_mismatch"<a class="headerlink" href="#redirect_uri_mismatch" title="Permanent link">&para;</a></h3>
+<p>Lo bikin OAuth client tipe "Web" instead of "Desktop app".</p>
+<p><strong>Fix:</strong> Bikin OAuth client baru, pilih <strong>Desktop app</strong> (Step 5).</p>
+<h3 id="tokenjson-expired-kena-revoke">token.json expired / kena revoke<a class="headerlink" href="#tokenjson-expired-kena-revoke" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>rm<span class="w"> </span>token.json
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>gsm<span class="w"> </span>doctor<span class="w">   </span><span class="c1"># akan re-auth via browser</span>
+</code></pre></div>
+<hr />
+<h2 id="security-notes">Security Notes<a class="headerlink" href="#security-notes" title="Permanent link">&para;</a></h2>
+<ul>
+<li><code>credentials.json</code> = identitas app lo. <strong>Jangan commit ke git!</strong> (sudah di-block di <code>.gitignore</code>)</li>
+<li><code>token.json</code> = akses ke Workspace lo. <strong>Jangan share!</strong> (juga di-block)</li>
+<li>Kalo <code>credentials.json</code> ke-leak: revoke di Google Cloud Console → bikin client baru</li>
+<li>Kalo <code>token.json</code> ke-leak: balik ke OAuth consent screen → di tab "Credentials" → revoke session</li>
+<li>Mode 0o600 (owner-read-only) di-enforce sama <code>gsm</code></li>
+</ul>
+<hr />
+<h2 id="quick-checklist">Quick Checklist<a class="headerlink" href="#quick-checklist" title="Permanent link">&para;</a></h2>
+<ul>
+<li>[ ] GCP project bikin</li>
+<li>[ ] Admin SDK API enabled</li>
+<li>[ ] Site Verification API enabled</li>
+<li>[ ] OAuth consent screen configured</li>
+<li>[ ] OAuth client tipe <strong>Desktop app</strong> dibikin</li>
+<li>[ ] JSON downloaded → renamed <code>credentials.json</code> → di project root</li>
+<li>[ ] <code>gsm doctor</code> → <code>oauth_client</code> PASS</li>
+<li>[ ] First command run → browser kebuka → login OK → <code>token.json</code> ter-create</li>
+</ul>
+<p>Kalo semua ✓, lo siap pake <code>gsm domains add</code> dan <code>gsm users add</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "content.code.copy", "content.code.annotate", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

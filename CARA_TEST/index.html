@@ -1,0 +1,2080 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="CLI tool for automating Google Workspace + Cloudflare domain & user management">
+      
+      
+        <meta name="author" content="nopperabbo">
+      
+      
+        <link rel="canonical" href="https://nopperabbo.github.io/gsuite-manager/CARA_TEST/">
+      
+      
+        <link rel="prev" href="../CARA_PAKE/">
+      
+      
+        <link rel="next" href="../PRODUCTION_RUNBOOK/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Testing - gsuite-manager</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="orange">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#cara-test-gsuite-manager-sendiri" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="gsuite-manager" class="md-header__button md-logo" aria-label="gsuite-manager" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            gsuite-manager
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Testing
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="blue" data-md-color-accent="orange"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="orange"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/nopperabbo/gsuite-manager" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    nopperabbo/gsuite-manager
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="gsuite-manager" class="md-nav__button md-logo" aria-label="gsuite-manager" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    gsuite-manager
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/nopperabbo/gsuite-manager" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    nopperabbo/gsuite-manager
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Getting Started
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../USAGE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Installation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../SETUP_GOOGLE_OAUTH/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Google OAuth Setup
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../QUICK_ROTATE_CF_TOKEN/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    CF Token Rotation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guide
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guide
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../CARA_PAKE/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorial (ID)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Testing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tier-1-smoke-test-tanpa-risiko-5-menit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TIER 1: Smoke Test (Tanpa Risiko, 5 Menit)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TIER 1: Smoke Test (Tanpa Risiko, 5 Menit)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-buka-terminal-di-folder-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Buka terminal di folder project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-workaround-macos-hidden-flag-sekali-aja" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Workaround macOS hidden flag (sekali aja)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-cek-cli-nyala" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Cek CLI nyala
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-run-automated-smoke-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Run automated smoke test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-run-unit-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Run unit tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-cek-wizard-gsm-setup-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Cek wizard gsm setup --help
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-cek-pre-flight-reject-domain-salah-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Cek pre-flight reject domain salah format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-cek-friendly-error-untuk-config-kosong" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Cek friendly error untuk config kosong
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-pass-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1 Pass Criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tier-2-real-test-1-domain-15-30-menit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TIER 2: Real Test (1 Domain, 15-30 Menit)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TIER 2: Real Test (1 Domain, 15-30 Menit)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#persiapan-one-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persiapan (one-time)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Persiapan (one-time)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2a-rotate-cf-api-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2A. Rotate CF API token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2b-cek-file-oauth-credentialsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2B. Cek file OAuth credentials.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2c-run-wizard-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2C. Run wizard setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-verify-dengan-doctor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2D. Verify dengan doctor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#main-test-1-domain-end-to-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main Test: 1 Domain End-to-End
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Main Test: 1 Domain End-to-End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-onboard-1-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Onboard 1 domain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-cek-state-ke-tracked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Cek state ke-tracked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-test-idempotency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Test idempotency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-test-verify-only-pending-skenario-dns-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Test verify --only-pending (skenario DNS slow)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-test-bulk-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional: Test Bulk Users
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional: Test Bulk Users">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bikin-akuntxt-minimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bikin akun.txt minimal:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cleanup-user-manual-via-admin-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cleanup user (manual via Admin Console):
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-2-pass-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 2 Pass Criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup-setelah-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cleanup setelah test
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cleanup setelah test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remove-test-domain-dari-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remove test domain dari Workspace:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-test-domain-dari-cloudflare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remove test domain dari Cloudflare:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-test-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remove test users:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hapus-state-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hapus state local:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#skenario-bug-hunt-optional-stress-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Skenario Bug Hunt (Optional - Stress Test)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Skenario Bug Hunt (Optional - Stress Test)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-1-corrupt-ledger-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 1: Corrupt ledger recovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-2-empty-akuntxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 2: Empty akun.txt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-3-malformed-akuntxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 3: Malformed akun.txt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-4-wrong-cf-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 4: Wrong CF token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-5-network-disconnect-simulasi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 5: Network disconnect (simulasi)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-cepat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting Cepat
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yang-harus-lo-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Yang Harus Lo Verify
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PRODUCTION_RUNBOOK/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Production Runbook
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ROADMAP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Roadmap
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../RESEARCH_GAP_ANALYSIS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Research
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../CHANGELOG.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Changelog
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#tier-1-smoke-test-tanpa-risiko-5-menit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TIER 1: Smoke Test (Tanpa Risiko, 5 Menit)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TIER 1: Smoke Test (Tanpa Risiko, 5 Menit)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-buka-terminal-di-folder-project" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Buka terminal di folder project
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-workaround-macos-hidden-flag-sekali-aja" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Workaround macOS hidden flag (sekali aja)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-cek-cli-nyala" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Cek CLI nyala
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-run-automated-smoke-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Run automated smoke test
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-run-unit-tests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Run unit tests
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-cek-wizard-gsm-setup-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Cek wizard gsm setup --help
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-cek-pre-flight-reject-domain-salah-format" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Cek pre-flight reject domain salah format
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-cek-friendly-error-untuk-config-kosong" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Cek friendly error untuk config kosong
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-1-pass-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 1 Pass Criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tier-2-real-test-1-domain-15-30-menit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        TIER 2: Real Test (1 Domain, 15-30 Menit)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="TIER 2: Real Test (1 Domain, 15-30 Menit)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#persiapan-one-time" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persiapan (one-time)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Persiapan (one-time)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#2a-rotate-cf-api-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2A. Rotate CF API token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2b-cek-file-oauth-credentialsjson" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2B. Cek file OAuth credentials.json
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2c-run-wizard-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2C. Run wizard setup
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2d-verify-dengan-doctor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2D. Verify dengan doctor
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#main-test-1-domain-end-to-end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Main Test: 1 Domain End-to-End
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Main Test: 1 Domain End-to-End">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-onboard-1-domain" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Onboard 1 domain
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-cek-state-ke-tracked" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Cek state ke-tracked
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-test-idempotency" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Test idempotency
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-test-verify-only-pending-skenario-dns-slow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Test verify --only-pending (skenario DNS slow)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#optional-test-bulk-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Optional: Test Bulk Users
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Optional: Test Bulk Users">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#bikin-akuntxt-minimal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bikin akun.txt minimal:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#run" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Run:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cleanup-user-manual-via-admin-console" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cleanup user (manual via Admin Console):
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tier-2-pass-criteria" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tier 2 Pass Criteria
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cleanup-setelah-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cleanup setelah test
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Cleanup setelah test">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#remove-test-domain-dari-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remove test domain dari Workspace:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-test-domain-dari-cloudflare" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remove test domain dari Cloudflare:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#remove-test-users" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Remove test users:
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hapus-state-local" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Hapus state local:
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#skenario-bug-hunt-optional-stress-test" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Skenario Bug Hunt (Optional - Stress Test)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Skenario Bug Hunt (Optional - Stress Test)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#test-1-corrupt-ledger-recovery" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 1: Corrupt ledger recovery
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-2-empty-akuntxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 2: Empty akun.txt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-3-malformed-akuntxt" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 3: Malformed akun.txt
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-4-wrong-cf-token" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 4: Wrong CF token
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#test-5-network-disconnect-simulasi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Test 5: Network disconnect (simulasi)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#troubleshooting-cepat" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Troubleshooting Cepat
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#yang-harus-lo-verify" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Yang Harus Lo Verify
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="cara-test-gsuite-manager-sendiri">Cara Test gsuite-manager Sendiri<a class="headerlink" href="#cara-test-gsuite-manager-sendiri" title="Permanent link">&para;</a></h1>
+<blockquote>
+<p>Tutorial buat lo test project ini step-by-step. Bagi 2 tier:
+<strong>Tier 1</strong> (5 menit) - cek instalasi &amp; CLI tanpa sentuh API real
+<strong>Tier 2</strong> (15-30 menit) - 1 domain test end-to-end (butuh CF token valid)</p>
+</blockquote>
+<hr />
+<h2 id="tier-1-smoke-test-tanpa-risiko-5-menit">TIER 1: Smoke Test (Tanpa Risiko, 5 Menit)<a class="headerlink" href="#tier-1-smoke-test-tanpa-risiko-5-menit" title="Permanent link">&para;</a></h2>
+<p>Tujuan: pastiin install bersih, semua command jalan, gak ada error tersembunyi.</p>
+<h3 id="step-1-buka-terminal-di-folder-project">Step 1: Buka terminal di folder project<a class="headerlink" href="#step-1-buka-terminal-di-folder-project" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;/Users/mac/Desktop/Bot/Gsuite Bot/gsuite-manager&quot;</span>
+</code></pre></div>
+<h3 id="step-2-workaround-macos-hidden-flag-sekali-aja">Step 2: Workaround macOS hidden flag (sekali aja)<a class="headerlink" href="#step-2-workaround-macos-hidden-flag-sekali-aja" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>chflags<span class="w"> </span>-R<span class="w"> </span>nohidden<span class="w"> </span>.venv
+</code></pre></div>
+<blockquote>
+<p>Penjelasan: macOS auto-hide folder <code>.venv</code>, Python 3.14 jadi nge-skip .pth file di dalamnya. Workaround ini bikin .venv dianggap visible.</p>
+</blockquote>
+<h3 id="step-3-cek-cli-nyala">Step 3: Cek CLI nyala<a class="headerlink" href="#step-3-cek-cli-nyala" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>.venv/bin/gsm<span class="w"> </span>--version
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>.venv/bin/gsm<span class="w"> </span>--help
+</code></pre></div>
+<p>Yang harus muncul:
+- <code>gsm 0.1.0</code>
+- Help dengan 6 command: <code>setup</code>, <code>init</code>, <code>doctor</code>, <code>domains</code>, <code>users</code>, <code>ledger</code></p>
+<p><strong>Kalo error <code>No module named 'gsm'</code>:</strong> ulangi Step 2.</p>
+<h3 id="step-4-run-automated-smoke-test">Step 4: Run automated smoke test<a class="headerlink" href="#step-4-run-automated-smoke-test" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>bash<span class="w"> </span>scripts/smoke_test.sh
+</code></pre></div>
+<p>Yang harus muncul:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>==&gt; 1. CLI: --help                      OK
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>==&gt; 2. CLI: domains/users subcommands   OK
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>==&gt; 3. CLI: init writes .env into temp dir  OK
+<a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>==&gt; 4. Tests + lint + types             OK
+<a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+<a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>All smoke checks passed.
+</code></pre></div></p>
+<h3 id="step-5-run-unit-tests">Step 5: Run unit tests<a class="headerlink" href="#step-5-run-unit-tests" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>.venv/bin/python<span class="w"> </span>-m<span class="w"> </span>pytest<span class="w"> </span>-q
+</code></pre></div>
+<p>Yang harus muncul:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>167 passed, 1 skipped in ~2s
+</code></pre></div></p>
+<blockquote>
+<p>Yang skipped itu test <code>python -m gsm</code> subprocess - normal di env lo karena path-with-spaces quirk.</p>
+</blockquote>
+<h3 id="step-6-cek-wizard-gsm-setup-help">Step 6: Cek wizard <code>gsm setup --help</code><a class="headerlink" href="#step-6-cek-wizard-gsm-setup-help" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>.venv/bin/gsm<span class="w"> </span>setup<span class="w"> </span>--help
+</code></pre></div>
+<p>Harus muncul help dengan 3 options: <code>--cwd</code>, <code>--force</code>, <code>--skip-test</code>.</p>
+<h3 id="step-7-cek-pre-flight-reject-domain-salah-format">Step 7: Cek pre-flight reject domain salah format<a class="headerlink" href="#step-7-cek-pre-flight-reject-domain-salah-format" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>.venv/bin/gsm<span class="w"> </span>domains<span class="w"> </span>add<span class="w"> </span>BadDomain.COM<span class="w"> </span><span class="m">2</span>&gt;<span class="p">&amp;</span><span class="m">1</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>tail<span class="w"> </span>-10
+</code></pre></div>
+<p>Yang harus muncul:
+- Tabel dengan status <code>failed</code>
+- Pesan error: <code>Domain harus huruf kecil tanpa whitespace. Gunakan: baddomain.com</code></p>
+<blockquote>
+<p>Ini bukti pre-flight check jalan.</p>
+</blockquote>
+<h3 id="step-8-cek-friendly-error-untuk-config-kosong">Step 8: Cek friendly error untuk config kosong<a class="headerlink" href="#step-8-cek-friendly-error-untuk-config-kosong" title="Permanent link">&para;</a></h3>
+<p>Buka terminal baru, ke folder kosong:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="nb">cd</span><span class="w"> </span>/tmp<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>mkdir<span class="w"> </span>-p<span class="w"> </span>gsm-test-empty<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="nb">cd</span><span class="w"> </span>gsm-test-empty
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="s2">&quot;/Users/mac/Desktop/Bot/Gsuite Bot/gsuite-manager/.venv/bin/gsm&quot;</span><span class="w"> </span>doctor
+</code></pre></div></p>
+<p>Yang harus muncul:
+- Tabel doctor dengan row <code>settings</code> = FAIL
+- Pesan jelas: "Field required: cf_api_token, cf_account_id"
+- <strong>TIDAK ADA Python traceback bertumpuk-tumpuk</strong></p>
+<h3 id="tier-1-pass-criteria">Tier 1 Pass Criteria<a class="headerlink" href="#tier-1-pass-criteria" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>gsm --version</code> cetak <code>0.1.0</code></li>
+<li>[ ] <code>gsm --help</code> tampil 6 command</li>
+<li>[ ] <code>bash scripts/smoke_test.sh</code> → "All smoke checks passed"</li>
+<li>[ ] <code>pytest -q</code> → 167 passed</li>
+<li>[ ] Pre-flight reject <code>BadDomain.COM</code> dengan saran lowercase</li>
+<li>[ ] Doctor di folder tanpa .env → friendly error, no traceback</li>
+</ul>
+<p>Kalo semua ✓, <strong>Tier 1 lulus.</strong> CLI ekat, install sehat.</p>
+<hr />
+<h2 id="tier-2-real-test-1-domain-15-30-menit">TIER 2: Real Test (1 Domain, 15-30 Menit)<a class="headerlink" href="#tier-2-real-test-1-domain-15-30-menit" title="Permanent link">&para;</a></h2>
+<p>Tujuan: validasi end-to-end pipeline pakai 1 domain throwaway.</p>
+<h3 id="persiapan-one-time">Persiapan (one-time)<a class="headerlink" href="#persiapan-one-time" title="Permanent link">&para;</a></h3>
+<h4 id="2a-rotate-cf-api-token">2A. Rotate CF API token<a class="headerlink" href="#2a-rotate-cf-api-token" title="Permanent link">&para;</a></h4>
+<p>Token lama yang ada di <code>legacy/gsuite_cloudflare_bot.py</code> udah ke-leak. Bikin baru:</p>
+<ol>
+<li>Buka https://dash.cloudflare.com/profile/api-tokens</li>
+<li>Klik "Create Token"</li>
+<li>Pilih template "Edit zone DNS"</li>
+<li>Account: pilih account lo</li>
+<li>Zone Resources: "All zones" (atau specific zones)</li>
+<li>Klik "Continue to summary" → "Create Token"</li>
+<li><strong>Copy tokennya</strong> (hanya muncul sekali!)</li>
+</ol>
+<h4 id="2b-cek-file-oauth-credentialsjson">2B. Cek file OAuth credentials.json<a class="headerlink" href="#2b-cek-file-oauth-credentialsjson" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>ls<span class="w"> </span>/Users/mac/Desktop/Bot/Gsuite<span class="se">\ </span>Bot/client_secret_*.json
+</code></pre></div>
+<p>Kalo ada file tersebut, lo udah punya credentials. Kalo gak ada:
+- Ikutin <code>docs/SETUP_GOOGLE_OAUTH.md</code> step-by-step</p>
+<h4 id="2c-run-wizard-setup">2C. Run wizard setup<a class="headerlink" href="#2c-run-wizard-setup" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;/Users/mac/Desktop/Bot/Gsuite Bot&quot;</span>
+<a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="s2">&quot;/Users/mac/Desktop/Bot/Gsuite Bot/gsuite-manager/.venv/bin/gsm&quot;</span><span class="w"> </span>setup
+</code></pre></div>
+<p>Wizard bakal nanya:
+1. <strong>CF API Token</strong>: paste token yang baru lo copy
+2. <strong>CF Account ID</strong>: dia auto-detect dari token, lo cuma confirm <code>y</code>
+3. <strong>OAuth client path</strong>: dia auto-detect file <code>client_secret_*.json</code>, lo confirm <code>y</code>
+4. <strong>Test koneksi</strong>: harus PASS dengan status "active"</p>
+<p>Yang harus muncul:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>[+] Setup selesai!
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>  Settings: /Users/mac/Desktop/Bot/Gsuite Bot/.env
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>  OAuth file: ./client_secret_xxx.json (ada)
+</code></pre></div></p>
+<h4 id="2d-verify-dengan-doctor">2D. Verify dengan doctor<a class="headerlink" href="#2d-verify-dengan-doctor" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>doctor
+</code></pre></div>
+<p>Target: <strong>5/5 PASS</strong>. Kalo masih ada FAIL, fix dulu sebelum lanjut Tier 2 main test.</p>
+<h3 id="main-test-1-domain-end-to-end">Main Test: 1 Domain End-to-End<a class="headerlink" href="#main-test-1-domain-end-to-end" title="Permanent link">&para;</a></h3>
+<blockquote>
+<p><strong>PENTING:</strong> Pakai domain throwaway yang lo OK kalo error / di-add ke Workspace lo.
+Lo bisa register .tech murah ($1-3) di Namecheap/Porkbun khusus buat tes.</p>
+</blockquote>
+<h4 id="step-1-onboard-1-domain">Step 1: Onboard 1 domain<a class="headerlink" href="#step-1-onboard-1-domain" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nb">cd</span><span class="w"> </span><span class="s2">&quot;/Users/mac/Desktop/Bot/Gsuite Bot&quot;</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>domains<span class="w"> </span>add<span class="w"> </span>my-test-domain.tech
+</code></pre></div>
+<p>Yang lo expect (urut):
+1. Browser OAuth muncul (kalo pertama kali) → login Workspace admin → setujui scope
+2. <code>step_add_gsuite</code> log → domain ke-add ke Workspace
+3. <code>step_fetch_token</code> log → ambil TXT verification token
+4. <code>step_ensure_zone</code> log → bikin zone di CF
+5. <code>step_inject_dns</code> log → inject 5 MX + 1 TXT record
+6. <code>step_wait_dns</code> log → poll DNS propagasi (bisa 1-5 menit)
+7. <code>step_verify</code> log → trigger Google verify
+8. Hasil akhir: tabel dengan status <strong>success</strong></p>
+<p>Total waktu: <strong>3-10 menit</strong> tergantung DNS propagasi.</p>
+<h4 id="step-2-cek-state-ke-tracked">Step 2: Cek state ke-tracked<a class="headerlink" href="#step-2-cek-state-ke-tracked" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>domains<span class="w"> </span>list
+</code></pre></div>
+<p>Domain lo harus muncul dengan status <code>verified</code>.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>ledger<span class="w"> </span>stats
+</code></pre></div>
+<p>Harus muncul <code>domains_verified: 1</code>.</p>
+<h4 id="step-3-test-idempotency">Step 3: Test idempotency<a class="headerlink" href="#step-3-test-idempotency" title="Permanent link">&para;</a></h4>
+<p>Run lagi command yang sama:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>domains<span class="w"> </span>add<span class="w"> </span>my-test-domain.tech
+</code></pre></div>
+<p>Yang harus muncul:
+- Status: <strong>skipped</strong> dengan pesan "already verified"
+- <strong>Tidak ada panggilan API yang re-trigger</strong></p>
+<blockquote>
+<p>Kalo dia trigger ulang dari awal, idempotency rusak (bug).</p>
+</blockquote>
+<h4 id="step-4-test-verify-only-pending-skenario-dns-slow">Step 4: Test verify --only-pending (skenario DNS slow)<a class="headerlink" href="#step-4-test-verify-only-pending-skenario-dns-slow" title="Permanent link">&para;</a></h4>
+<p>Skenario: domain yang DNS-nya belum propagasi.</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>domains<span class="w"> </span>add<span class="w"> </span>another-test.tech
+<a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="c1"># Misal DNS belum propagasi - dia jadi DNS_PENDING</span>
+</code></pre></div>
+<p>Lalu retry:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-19-1" name="__codelineno-19-1" href="#__codelineno-19-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>domains<span class="w"> </span>verify<span class="w"> </span>--only-pending
+</code></pre></div></p>
+<p>Yang harus muncul:
+- Cuma cek domain dengan status <code>DNS_PENDING</code> atau <code>DNS_INJECTED</code>
+- Skip yang <code>verified</code></p>
+<h3 id="optional-test-bulk-users">Optional: Test Bulk Users<a class="headerlink" href="#optional-test-bulk-users" title="Permanent link">&para;</a></h3>
+<h4 id="bikin-akuntxt-minimal">Bikin akun.txt minimal:<a class="headerlink" href="#bikin-akuntxt-minimal" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-20-1" name="__codelineno-20-1" href="#__codelineno-20-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>akun.txt<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<a id="__codelineno-20-2" name="__codelineno-20-2" href="#__codelineno-20-2"></a><span class="s">testuser1@my-test-domain.tech | TestPass123! | code-1</span>
+<a id="__codelineno-20-3" name="__codelineno-20-3" href="#__codelineno-20-3"></a><span class="s">testuser2@my-test-domain.tech | TestPass123! | code-2</span>
+<a id="__codelineno-20-4" name="__codelineno-20-4" href="#__codelineno-20-4"></a><span class="s">EOF</span>
+</code></pre></div>
+<h4 id="run">Run:<a class="headerlink" href="#run" title="Permanent link">&para;</a></h4>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-21-1" name="__codelineno-21-1" href="#__codelineno-21-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>users<span class="w"> </span>add<span class="w"> </span>--file<span class="w"> </span>akun.txt
+</code></pre></div>
+<p>Yang harus muncul:
+- Progress bar: 2 user, ETA, dll
+- Tabel hasil: 2 success
+- <code>gsm users list</code> → 2 user appear</p>
+<h4 id="cleanup-user-manual-via-admin-console">Cleanup user (manual via Admin Console):<a class="headerlink" href="#cleanup-user-manual-via-admin-console" title="Permanent link">&para;</a></h4>
+<p>User Workspace yang testuser1 / testuser2 perlu lo delete via https://admin.google.com/ kalo mau bersih.</p>
+<h3 id="tier-2-pass-criteria">Tier 2 Pass Criteria<a class="headerlink" href="#tier-2-pass-criteria" title="Permanent link">&para;</a></h3>
+<ul>
+<li>[ ] <code>gsm setup</code> wizard jalan tanpa error, test koneksi PASS</li>
+<li>[ ] <code>gsm doctor</code> 5/5 PASS</li>
+<li>[ ] <code>gsm domains add my-test.tech</code> end-to-end success (verified)</li>
+<li>[ ] <code>gsm domains list</code> tampil domain dengan status verified</li>
+<li>[ ] Re-run <code>gsm domains add</code> same domain → skipped (idempotent)</li>
+<li>[ ] <code>gsm users add</code> bikin user, tampil di <code>gsm users list</code></li>
+</ul>
+<p>Kalo semua ✓, <strong>lo udah validasi project secara real.</strong> Aman pake produksi.</p>
+<hr />
+<h2 id="cleanup-setelah-test">Cleanup setelah test<a class="headerlink" href="#cleanup-setelah-test" title="Permanent link">&para;</a></h2>
+<h3 id="remove-test-domain-dari-workspace">Remove test domain dari Workspace:<a class="headerlink" href="#remove-test-domain-dari-workspace" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Buka https://admin.google.com → Domains → Manage domains</li>
+<li>Find domain test, delete</li>
+</ol>
+<h3 id="remove-test-domain-dari-cloudflare">Remove test domain dari Cloudflare:<a class="headerlink" href="#remove-test-domain-dari-cloudflare" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Buka https://dash.cloudflare.com → pilih domain</li>
+<li>Settings → Advanced Actions → Delete Zone</li>
+</ol>
+<h3 id="remove-test-users">Remove test users:<a class="headerlink" href="#remove-test-users" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Buka https://admin.google.com → Users</li>
+<li>Find testuser1/testuser2, delete</li>
+</ol>
+<h3 id="hapus-state-local">Hapus state local:<a class="headerlink" href="#hapus-state-local" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-22-1" name="__codelineno-22-1" href="#__codelineno-22-1"></a>rm<span class="w"> </span>gsm_state.json<span class="w"> </span>gsm_state.json.archive.json<span class="w"> </span>akun.txt<span class="w"> </span><span class="m">2</span>&gt;/dev/null
+</code></pre></div>
+<hr />
+<h2 id="skenario-bug-hunt-optional-stress-test">Skenario Bug Hunt (Optional - Stress Test)<a class="headerlink" href="#skenario-bug-hunt-optional-stress-test" title="Permanent link">&para;</a></h2>
+<p>Kalo lo iseng pengen tes lebih edge case:</p>
+<h3 id="test-1-corrupt-ledger-recovery">Test 1: Corrupt ledger recovery<a class="headerlink" href="#test-1-corrupt-ledger-recovery" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-23-1" name="__codelineno-23-1" href="#__codelineno-23-1"></a><span class="nb">echo</span><span class="w"> </span><span class="s1">&#39;GARBAGE NOT JSON&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>gsm_state.json
+<a id="__codelineno-23-2" name="__codelineno-23-2" href="#__codelineno-23-2"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>domains<span class="w"> </span>list
+<a id="__codelineno-23-3" name="__codelineno-23-3" href="#__codelineno-23-3"></a><span class="c1"># Expected: &quot;(no domains in ledger)&quot;</span>
+<a id="__codelineno-23-4" name="__codelineno-23-4" href="#__codelineno-23-4"></a>ls<span class="w"> </span>gsm_state.json.corrupt-*<span class="w">   </span><span class="c1"># corrupt file di-backup</span>
+</code></pre></div>
+<h3 id="test-2-empty-akuntxt">Test 2: Empty akun.txt<a class="headerlink" href="#test-2-empty-akuntxt" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-24-1" name="__codelineno-24-1" href="#__codelineno-24-1"></a>touch<span class="w"> </span>empty_akun.txt
+<a id="__codelineno-24-2" name="__codelineno-24-2" href="#__codelineno-24-2"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>users<span class="w"> </span>add<span class="w"> </span>--file<span class="w"> </span>empty_akun.txt
+<a id="__codelineno-24-3" name="__codelineno-24-3" href="#__codelineno-24-3"></a><span class="c1"># Expected: friendly message, no crash</span>
+</code></pre></div>
+<h3 id="test-3-malformed-akuntxt">Test 3: Malformed akun.txt<a class="headerlink" href="#test-3-malformed-akuntxt" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-25-1" name="__codelineno-25-1" href="#__codelineno-25-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>bad_akun.txt<span class="w"> </span><span class="s">&lt;&lt;EOF</span>
+<a id="__codelineno-25-2" name="__codelineno-25-2" href="#__codelineno-25-2"></a><span class="s"># only comments</span>
+<a id="__codelineno-25-3" name="__codelineno-25-3" href="#__codelineno-25-3"></a><span class="s">@invalid | pw</span>
+<a id="__codelineno-25-4" name="__codelineno-25-4" href="#__codelineno-25-4"></a><span class="s">local@nodot | pw</span>
+<a id="__codelineno-25-5" name="__codelineno-25-5" href="#__codelineno-25-5"></a><span class="s">valid@example.com | pw</span>
+<a id="__codelineno-25-6" name="__codelineno-25-6" href="#__codelineno-25-6"></a><span class="s">EOF</span>
+<a id="__codelineno-25-7" name="__codelineno-25-7" href="#__codelineno-25-7"></a><span class="c1"># Run dry mode (just parse, don&#39;t create):</span>
+<a id="__codelineno-25-8" name="__codelineno-25-8" href="#__codelineno-25-8"></a>.venv/bin/python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;</span>
+<a id="__codelineno-25-9" name="__codelineno-25-9" href="#__codelineno-25-9"></a><span class="s2">from gsm.workflows.user_bulk_create import parse_akun_file</span>
+<a id="__codelineno-25-10" name="__codelineno-25-10" href="#__codelineno-25-10"></a><span class="s2">from pathlib import Path</span>
+<a id="__codelineno-25-11" name="__codelineno-25-11" href="#__codelineno-25-11"></a><span class="s2">print(parse_akun_file(Path(&#39;bad_akun.txt&#39;)))</span>
+<a id="__codelineno-25-12" name="__codelineno-25-12" href="#__codelineno-25-12"></a><span class="s2">&quot;</span>
+<a id="__codelineno-25-13" name="__codelineno-25-13" href="#__codelineno-25-13"></a><span class="c1"># Expected: cuma valid@example.com yang lolos</span>
+</code></pre></div>
+<h3 id="test-4-wrong-cf-token">Test 4: Wrong CF token<a class="headerlink" href="#test-4-wrong-cf-token" title="Permanent link">&para;</a></h3>
+<p>Edit <code>.env</code> ganti GSM_CF_API_TOKEN ke token salah, run:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-26-1" name="__codelineno-26-1" href="#__codelineno-26-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>doctor
+</code></pre></div>
+Expected: cloudflare row FAIL dengan "token invalid"</p>
+<h3 id="test-5-network-disconnect-simulasi">Test 5: Network disconnect (simulasi)<a class="headerlink" href="#test-5-network-disconnect-simulasi" title="Permanent link">&para;</a></h3>
+<p>Disable WiFi, run:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-27-1" name="__codelineno-27-1" href="#__codelineno-27-1"></a>gsuite-manager/.venv/bin/gsm<span class="w"> </span>domains<span class="w"> </span>add<span class="w"> </span>some-domain.com
+</code></pre></div>
+Expected: friendly error "Koneksi internet bermasalah ke server" (bukan raw stacktrace)</p>
+<hr />
+<h2 id="troubleshooting-cepat">Troubleshooting Cepat<a class="headerlink" href="#troubleshooting-cepat" title="Permanent link">&para;</a></h2>
+<p>| Gejala | Solusi |
+|---|
+| <code>No module named 'gsm'</code> | Run <code>chflags -R nohidden .venv</code> |
+| <code>OAuth client file not found</code> | Cek file <code>credentials.json</code> ada di CWD lo |
+| <code>cloudflare: token invalid</code> | Run <code>gsm setup --force</code> ulang dengan token baru |
+| <code>DNS verification token could not be found</code> | Tunggu 5 menit, run <code>gsm domains verify --only-pending</code> |
+| Browser OAuth gak kebuka | Pastiin gak running di SSH/headless server |
+| <code>permission denied</code> saat install | Pakai <code>pipx install .</code> atau <code>pip install --user</code> |</p>
+<hr />
+<h2 id="yang-harus-lo-verify">Yang Harus Lo Verify<a class="headerlink" href="#yang-harus-lo-verify" title="Permanent link">&para;</a></h2>
+<p>Inti tutorial ini: lo bisa <strong>percaya tool ini sebelum bikin commit ke production batch</strong>.</p>
+<p><strong>Tier 1 cukup buat conviction "tool gak crash".</strong>
+<strong>Tier 2 cukup buat conviction "tool benar-benar bekerja end-to-end".</strong></p>
+<p>Kalo dua-duanya pass, lo siap onboard 150 domain real lo.</p>
+<p>Selamat tes. Kabar lo kalo nemu yang aneh - gua bakal fix.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.sections", "navigation.expand", "content.code.copy", "content.code.annotate", "search.suggest", "search.highlight"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
