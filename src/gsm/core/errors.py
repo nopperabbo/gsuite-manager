@@ -37,14 +37,12 @@ def humanize(raw_error: str | Exception) -> FriendlyError:
     if "403" in text and "cloudflare" in text:
         return FriendlyError(
             "CF API Token kurang permission (403 Forbidden).",
-            "Pastikan token punya scope 'Zone:Edit' + 'DNS:Edit' "
-            "untuk account yang benar.",
+            "Pastikan token punya scope 'Zone:Edit' + 'DNS:Edit' untuk account yang benar.",
         )
     if "rate limit" in text or "429" in text:
         return FriendlyError(
             "Rate limit ke-trigger.",
-            "Tambah delay di .env: GSM_DELAY_PER_DOMAIN_SEC=10 atau lebih, "
-            "lalu retry.",
+            "Tambah delay di .env: GSM_DELAY_PER_DOMAIN_SEC=10 atau lebih, lalu retry.",
         )
 
     if "network error" in text or "timeout" in text or "connection" in text:
@@ -83,12 +81,9 @@ def humanize(raw_error: str | Exception) -> FriendlyError:
             "Sudah ada (duplikat) - umumnya safe, di-skip.",
             None,
         )
-    if "verification token could not be found" in text or (
-        "txt" in text and "not found" in text
-    ):
+    if "verification token could not be found" in text or ("txt" in text and "not found" in text):
         return FriendlyError(
-            "TXT record buat verifikasi belum ke-detect Google "
-            "(DNS belum sepenuhnya propagasi).",
+            "TXT record buat verifikasi belum ke-detect Google (DNS belum sepenuhnya propagasi).",
             "Tunggu 2-5 menit, lalu run: gsm domains verify --only-pending",
         )
     if "already verified" in text:

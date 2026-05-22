@@ -125,21 +125,15 @@ class UserBulkCreator:
             record.last_error = None
             record.last_updated = datetime.now(UTC)
             self._ledger.upsert_user(record)
-            return ItemResult.success(
-                account.email, "created", status=record.status.value
-            )
+            return ItemResult.success(account.email, "created", status=record.status.value)
         except (AuthError, GoogleAdminError) as e:
             friendly = humanize(e).render()
             record.status = UserStatus.FAILED
             record.last_error = friendly
             record.last_updated = datetime.now(UTC)
             self._ledger.upsert_user(record)
-            self._log.error(
-                "user_create_failed", email=account.email, error=str(e)
-            )
-            return ItemResult.failed(
-                account.email, friendly, status=record.status.value
-            )
+            self._log.error("user_create_failed", email=account.email, error=str(e))
+            return ItemResult.failed(account.email, friendly, status=record.status.value)
 
 
 def create_users(
@@ -156,11 +150,7 @@ def create_users(
     on_progress(index, total, email, result) called after each user.
     """
     creator = UserBulkCreator(settings=settings, ledger=ledger, admin=admin)
-    delay = (
-        delay_per_user_sec
-        if delay_per_user_sec is not None
-        else settings.delay_per_user_sec
-    )
+    delay = delay_per_user_sec if delay_per_user_sec is not None else settings.delay_per_user_sec
     results: list[ItemResult] = []
     total = len(accounts)
     for idx, account in enumerate(accounts):

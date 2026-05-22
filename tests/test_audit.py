@@ -19,15 +19,9 @@ def runner():
 @pytest.fixture
 def env(monkeypatch, tmp_path):
     monkeypatch.setenv("GSM_CF_API_TOKEN", "test-token")
-    monkeypatch.setenv(
-        "GSM_CF_ACCOUNT_ID", "0061a056f8cbc860fb9ec99bd41a0ccc"
-    )
-    monkeypatch.setenv(
-        "GSM_GOOGLE_OAUTH_CLIENT_PATH", str(tmp_path / "credentials.json")
-    )
-    monkeypatch.setenv(
-        "GSM_GOOGLE_OAUTH_TOKEN_PATH", str(tmp_path / "token.json")
-    )
+    monkeypatch.setenv("GSM_CF_ACCOUNT_ID", "0061a056f8cbc860fb9ec99bd41a0ccc")
+    monkeypatch.setenv("GSM_GOOGLE_OAUTH_CLIENT_PATH", str(tmp_path / "credentials.json"))
+    monkeypatch.setenv("GSM_GOOGLE_OAUTH_TOKEN_PATH", str(tmp_path / "token.json"))
     monkeypatch.setenv("GSM_LEDGER_PATH", str(tmp_path / "gsm_state.json"))
     return tmp_path
 
@@ -45,8 +39,9 @@ class TestAuditCommand:
             {"domainName": "a.com", "verified": True},
             {"domainName": "b.com", "verified": True},
         ]
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
         ):
             result = runner.invoke(app, ["audit"])
         assert result.exit_code == 0
@@ -63,8 +58,9 @@ class TestAuditCommand:
         admin.list_domains.return_value = [
             {"domainName": "synced.com", "verified": True},
         ]
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
         ):
             result = runner.invoke(app, ["audit"])
         assert result.exit_code == 0
@@ -80,8 +76,9 @@ class TestAuditCommand:
             {"domainName": "a.com", "verified": True},
             {"domainName": "no-cf-zone.com", "verified": True},
         ]
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
         ):
             result = runner.invoke(app, ["audit"])
         assert result.exit_code == 0
@@ -94,8 +91,9 @@ class TestAuditCommand:
         admin.list_domains.return_value = [
             {"domainName": "pending.com", "verified": False},
         ]
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
         ):
             result = runner.invoke(app, ["audit"])
         assert result.exit_code == 0
@@ -107,12 +105,11 @@ class TestAuditCommand:
         admin = MagicMock()
         admin.list_domains.return_value = []
         out_file = tmp_path / "gaps.txt"
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
         ):
-            result = runner.invoke(
-                app, ["audit", "--output", str(out_file)]
-            )
+            result = runner.invoke(app, ["audit", "--output", str(out_file)])
         assert result.exit_code == 0
         assert out_file.exists()
         content = out_file.read_text()
@@ -126,8 +123,9 @@ class TestAuditCommand:
         admin.list_domains.return_value = [
             {"domainName": "a.com", "verified": True},
         ]
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
         ):
             result = runner.invoke(app, ["audit", "--show-synced"])
         assert result.exit_code == 0
@@ -139,8 +137,9 @@ class TestAuditCommand:
         cf = MagicMock()
         cf.list_zones.side_effect = CloudflareError("Invalid API Token")
         admin = MagicMock()
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
         ):
             result = runner.invoke(app, ["audit"])
         assert result.exit_code == 2

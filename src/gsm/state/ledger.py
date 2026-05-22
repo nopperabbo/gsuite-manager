@@ -7,10 +7,14 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+import structlog
+
 from gsm.models.domain import DomainRecord, DomainStatus
 from gsm.models.user import UserRecord
 
 __all__ = ["LEDGER_VERSION", "Ledger"]
+
+_log = structlog.get_logger(__name__)
 
 LEDGER_VERSION = 1
 
@@ -41,12 +45,14 @@ class Ledger:
         for name, data in (raw.get("domains") or {}).items():
             try:
                 self._domains[name] = DomainRecord.model_validate(data)
-            except Exception:
+            except Exception as e:
+                _log.warning("ledger_skip_corrupt_domain", domain=name, error=str(e))
                 continue
         for email, data in (raw.get("users") or {}).items():
             try:
                 self._users[email] = UserRecord.model_validate(data)
-            except Exception:
+            except Exception as e:
+                _log.warning("ledger_skip_corrupt_user", email=email, error=str(e))
                 continue
 
     def _backup_corrupt_file(self) -> None:
@@ -56,11 +62,12 @@ class Ledger:
         data is preserved. Persist() later will write a fresh ledger.
         """
         try:
-            ts = datetime.now().strftime("%Y%m%d-%H%M%S")
+            ts = datetime.now(UTC).strftime("%Y%m%d-%H%M%S")
             backup = self._path.with_suffix(self._path.suffix + f".corrupt-{ts}")
             os.replace(self._path, backup)
-        except OSError:
-            pass
+            _log.warning("ledger_corrupt_backup", backup=str(backup))
+        except OSError as e:
+            _log.error("ledger_backup_failed", error=str(e))
 
     def _persist(self) -> None:
         payload: dict[str, Any] = {
@@ -118,12 +125,24 @@ class Ledger:
         cutoff = before if before.tzinfo else before.replace(tzinfo=UTC)
         with self._lock:
             old_domains = {
-                k: v for k, v in self._domains.items()
-                if (v.last_updated.replace(tzinfo=UTC) if not v.last_updated.tzinfo else v.last_updated) < cutoff
+                k: v
+                for k, v in self._domains.items()
+                if (
+                    v.last_updated.replace(tzinfo=UTC)
+                    if not v.last_updated.tzinfo
+                    else v.last_updated
+                )
+                < cutoff
             }
             old_users = {
-                k: v for k, v in self._users.items()
-                if (v.last_updated.replace(tzinfo=UTC) if not v.last_updated.tzinfo else v.last_updated) < cutoff
+                k: v
+                for k, v in self._users.items()
+                if (
+                    v.last_updated.replace(tzinfo=UTC)
+                    if not v.last_updated.tzinfo
+                    else v.last_updated
+                )
+                < cutoff
             }
 
             if not old_domains and not old_users:

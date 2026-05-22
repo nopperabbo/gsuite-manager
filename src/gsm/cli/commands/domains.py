@@ -61,7 +61,9 @@ def domains_add(
     """Onboard one or more domains end-to-end (add -> CF zone -> DNS -> verify)."""
     targets = _collect_domains(domain, file)
     if dry_run:
-        console.print(f"[dim]--dry-run: would onboard {len(targets)} domain(s): {', '.join(targets[:5])}{'...' if len(targets) > 5 else ''}[/dim]")
+        console.print(
+            f"[dim]--dry-run: would onboard {len(targets)} domain(s): {', '.join(targets[:5])}{'...' if len(targets) > 5 else ''}[/dim]"
+        )
         return
     runtime = get_context(ctx)
     with batch_progress(f"Onboarding {len(targets)} domain(s)", len(targets)) as on_progress:
@@ -89,9 +91,7 @@ def domains_verify(
         None,
         help="Domain(s) to retry verification on (alternative to --file).",
     ),
-    file: Path | None = typer.Option(
-        None, "--file", "-f", help="Read domains from file."
-    ),
+    file: Path | None = typer.Option(None, "--file", "-f", help="Read domains from file."),
     only_pending: bool = typer.Option(
         False,
         "--only-pending",

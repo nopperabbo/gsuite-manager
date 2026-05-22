@@ -57,9 +57,11 @@ def dns_apply_command(
         targets = [domain]
     elif file:
         from gsm.cli._shared import read_lines
+
         targets = read_lines(file)
     else:
         from gsm.models.domain import DomainStatus
+
         ledger_domains = runtime.ledger.list_domains(status=DomainStatus.VERIFIED)
         targets = [r.name for r in ledger_domains]
 
@@ -96,6 +98,7 @@ def dns_apply_command(
                 console.print(f"[red][-][/red] {d}: no CF zone found, skip")
                 failed += 1
                 from gsm.models.results import ItemResult
+
                 on_progress(idx, len(targets), d, ItemResult.failed(d, "no zone"))
                 continue
             domain_ok = True
@@ -118,9 +121,12 @@ def dns_apply_command(
             else:
                 failed += 1
             from gsm.models.results import ItemResult
+
             on_progress(
-                idx, len(targets), d,
-                ItemResult.success(d, "ok") if domain_ok else ItemResult.failed(d, "partial")
+                idx,
+                len(targets),
+                d,
+                ItemResult.success(d, "ok") if domain_ok else ItemResult.failed(d, "partial"),
             )
 
     console.print(f"\n[green]success={success}[/green]  [red]failed={failed}[/red]")

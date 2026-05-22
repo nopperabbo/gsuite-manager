@@ -49,9 +49,7 @@ class TestRoundTrip:
 
     def test_upsert_user(self, tmp_path: Path) -> None:
         ledger = Ledger(tmp_path / "s.json")
-        record = UserRecord(
-            email="alice@bunhe.tech", status=UserStatus.CREATED, first_name="Alice"
-        )
+        record = UserRecord(email="alice@bunhe.tech", status=UserStatus.CREATED, first_name="Alice")
         ledger.upsert_user(record)
 
         fresh = Ledger(tmp_path / "s.json")
@@ -134,9 +132,7 @@ class TestThreadSafety:
         ledger = Ledger(tmp_path / "s.json")
 
         def worker(i: int) -> None:
-            ledger.upsert_domain(
-                DomainRecord(name=f"domain{i}.com", status=DomainStatus.VERIFIED)
-            )
+            ledger.upsert_domain(DomainRecord(name=f"domain{i}.com", status=DomainStatus.VERIFIED))
 
         threads = [threading.Thread(target=worker, args=(i,)) for i in range(20)]
         for t in threads:

@@ -29,6 +29,7 @@ def health_command(
     else:
         records = runtime.ledger.list_domains()
         from gsm.models.domain import DomainStatus
+
         targets = [r.name for r in records if r.status == DomainStatus.VERIFIED]
         if not targets:
             console.print("[yellow]No verified domains in ledger.[/yellow]")
@@ -56,15 +57,14 @@ def health_command(
         try:
             txt_answers = dns.resolver.resolve(d, "TXT")
             txt_values = " ".join(
-                b"".join(r.strings).decode("utf-8", errors="replace")
-                for r in txt_answers
+                b"".join(r.strings).decode("utf-8", errors="replace") for r in txt_answers
             )
             if "google-site-verification=" not in txt_values:
                 problems.append("TXT: google-site-verification missing")
         except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.resolver.NoNameservers):
             problems.append("TXT: no answer")
-        except Exception:
-            pass
+        except Exception as e:
+            problems.append(f"TXT query error: {e}")
 
         try:
             ns_answers = dns.resolver.resolve(d, "NS")
@@ -72,8 +72,10 @@ def health_command(
             has_cf = any("cloudflare" in ns for ns in ns_hosts)
             if not has_cf:
                 problems.append(f"NS not CF: {', '.join(sorted(ns_hosts)[:2])}")
-        except Exception:
-            problems.append("NS: query failed")
+        except (dns.resolver.NXDOMAIN, dns.resolver.NoAnswer, dns.resolver.NoNameservers):
+            problems.append("NS: no answer")
+        except Exception as e:
+            problems.append(f"NS query error: {e}")
 
         if problems:
             for p in problems:
@@ -88,16 +90,15 @@ def health_command(
             "healthy": healthy,
             "issues_count": len(set(i[0] for i in issues)),
             "total": len(targets),
-            "issues": [
-                {"domain": d, "severity": sev, "problem": prob}
-                for d, sev, prob in issues
-            ],
+            "issues": [{"domain": d, "severity": sev, "problem": prob} for d, sev, prob in issues],
         }
         typer.echo(json.dumps(data, indent=2))
         return
 
     if issues:
-        table = Table(title=f"DNS Issues ({len(issues)} problems in {len(set(i[0] for i in issues))} domains)")
+        table = Table(
+            title=f"DNS Issues ({len(issues)} problems in {len(set(i[0] for i in issues))} domains)"
+        )
         table.add_column("Domain")
         table.add_column("Issue")
         for d, _, problem in issues:

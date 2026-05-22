@@ -129,11 +129,17 @@ def users_reset_password(
     ctx: typer.Context,
     domain: str | None = typer.Option(None, "--domain", "-d", help="Filter users by domain."),
     file: Path | None = typer.Option(None, "--file", "-f", help="File with emails (one per line)."),
-    same_password: str | None = typer.Option(None, "--same-password", help="Set same password for all users."),
+    same_password: str | None = typer.Option(
+        None, "--same-password", help="Set same password for all users."
+    ),
     random: bool = typer.Option(False, "--random", help="Generate random password per user."),
     length: int = typer.Option(16, "--length", help="Random password length."),
-    output: Path | None = typer.Option(None, "--output", "-o", help="Write email|new_password ke file."),
-    force_change: bool = typer.Option(False, "--force-change", help="Force user change password at next login."),
+    output: Path | None = typer.Option(
+        None, "--output", "-o", help="Write email|new_password ke file."
+    ),
+    force_change: bool = typer.Option(
+        False, "--force-change", help="Force user change password at next login."
+    ),
 ) -> None:
     """Bulk reset password: --same-password 'X' atau --random."""
     import secrets
@@ -150,9 +156,11 @@ def users_reset_password(
     emails: list[str] = []
     if file:
         from gsm.cli._shared import read_lines
+
         emails = read_lines(file)
     elif domain:
         from gsm.clients.google_admin import GoogleAdminError
+
         try:
             ws_users = runtime.admin.list_users(domain=domain)
         except GoogleAdminError as e:
@@ -160,9 +168,7 @@ def users_reset_password(
             raise typer.Exit(code=2) from e
         emails = [u["primaryEmail"] for u in ws_users if u.get("primaryEmail")]
     else:
-        err_console.print(
-            "[red][-][/red] Harus kasih --domain atau --file (target users)."
-        )
+        err_console.print("[red][-][/red] Harus kasih --domain atau --file (target users).")
         raise typer.Exit(code=2)
 
     if not emails:
@@ -177,8 +183,10 @@ def users_reset_password(
     from gsm.clients.google_admin import GoogleAdminError
 
     for email in emails:
-        pw = same_password if same_password else "".join(
-            secrets.choice(alphabet) for _ in range(length)
+        pw = (
+            same_password
+            if same_password
+            else "".join(secrets.choice(alphabet) for _ in range(length))
         )
         try:
             runtime.admin.update_password(
@@ -191,21 +199,22 @@ def users_reset_password(
 
     success = sum(1 for _, _, ok in results if ok)
     failed = len(results) - success
-    console.print(
-        f"\n[green]success={success}[/green]  [red]failed={failed}[/red]"
-    )
+    console.print(f"\n[green]success={success}[/green]  [red]failed={failed}[/red]")
 
     if output and success > 0:
         lines = [f"{email} | {pw}" for email, pw, ok in results if ok]
         output.write_text("\n".join(lines) + "\n", encoding="utf-8")
         output.chmod(0o600)
-        console.print(f"[green][+][/green] Credentials written to [cyan]{output}[/cyan] (mode 0600)")
+        console.print(
+            f"[green][+][/green] Credentials written to [cyan]{output}[/cyan] (mode 0600)"
+        )
     elif random and not output and success > 0:
         console.print(
             "\n[yellow][!][/yellow] Random passwords generated tapi --output gak di-set.\n"
             "    Password gak bisa di-recover! Tambahin --output <file> next time."
         )
         from rich.table import Table
+
         t = Table(title="Generated passwords (SAVE THIS!)")
         t.add_column("Email")
         t.add_column("Password")
@@ -288,7 +297,9 @@ def users_delete(
 @users_app.command("update")
 def users_update(
     ctx: typer.Context,
-    file: Path = typer.Option(..., "--file", "-f", help="CSV file: email,field,value (one change per line)."),
+    file: Path = typer.Option(
+        ..., "--file", "-f", help="CSV file: email,field,value (one change per line)."
+    ),
 ) -> None:
     """Bulk update user info from CSV (name, department, title, phone).
 

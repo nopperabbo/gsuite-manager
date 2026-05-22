@@ -46,8 +46,7 @@ class TestParseAkun:
     def test_parses_basic_three_field_lines(self, tmp_path):
         f = tmp_path / "akun.txt"
         f.write_text(
-            "alice.smith@example.com | hunter2 | code-1\n"
-            "bob.jones@example.com | secret | code-2\n"
+            "alice.smith@example.com | hunter2 | code-1\nbob.jones@example.com | secret | code-2\n"
         )
         accounts = parse_akun_file(f)
         assert len(accounts) == 2
@@ -59,33 +58,20 @@ class TestParseAkun:
 
     def test_skips_blanks_and_comments(self, tmp_path):
         f = tmp_path / "akun.txt"
-        f.write_text(
-            "\n"
-            "# comment\n"
-            "user@example.com | pw\n"
-            "\n"
-            "# another comment\n"
-        )
+        f.write_text("\n# comment\nuser@example.com | pw\n\n# another comment\n")
         accounts = parse_akun_file(f)
         assert len(accounts) == 1
 
     def test_skips_lines_without_at_sign(self, tmp_path):
         f = tmp_path / "akun.txt"
-        f.write_text(
-            "valid@example.com | pw\n"
-            "no-at-sign here\n"
-            "# also not valid\n"
-        )
+        f.write_text("valid@example.com | pw\nno-at-sign here\n# also not valid\n")
         accounts = parse_akun_file(f)
         assert len(accounts) == 1
         assert accounts[0].email == "valid@example.com"
 
     def test_skips_lines_with_too_few_fields(self, tmp_path):
         f = tmp_path / "akun.txt"
-        f.write_text(
-            "alice@example.com\n"
-            "valid@example.com | pw\n"
-        )
+        f.write_text("alice@example.com\nvalid@example.com | pw\n")
         accounts = parse_akun_file(f)
         assert len(accounts) == 1
 
@@ -98,11 +84,7 @@ class TestParseAkun:
     def test_rejects_malformed_emails(self, tmp_path):
         f = tmp_path / "akun.txt"
         f.write_text(
-            "@nolocal | pw\n"
-            "local@ | pw\n"
-            "local@nodot | pw\n"
-            "  @  | pw\n"
-            "valid@example.com | pw\n"
+            "@nolocal | pw\nlocal@ | pw\nlocal@nodot | pw\n  @  | pw\nvalid@example.com | pw\n"
         )
         accounts = parse_akun_file(f)
         assert len(accounts) == 1
@@ -110,11 +92,7 @@ class TestParseAkun:
 
     def test_rejects_empty_password(self, tmp_path):
         f = tmp_path / "akun.txt"
-        f.write_text(
-            "user@example.com | \n"
-            "user2@example.com |   \n"
-            "valid@example.com | pw\n"
-        )
+        f.write_text("user@example.com | \nuser2@example.com |   \nvalid@example.com | pw\n")
         accounts = parse_akun_file(f)
         assert len(accounts) == 1
         assert accounts[0].email == "valid@example.com"
@@ -162,9 +140,7 @@ class TestUserBulkCreator:
             first_name="X",
             last_name="Y",
         )
-        creator = UserBulkCreator(
-            settings=settings, ledger=ledger, admin=admin
-        )
+        creator = UserBulkCreator(settings=settings, ledger=ledger, admin=admin)
         result = creator.run(spec)
         from gsm.models.results import ResultKind
 
@@ -192,9 +168,7 @@ class TestUserBulkCreator:
             first_name="X",
             last_name="Y",
         )
-        creator = UserBulkCreator(
-            settings=settings, ledger=ledger, admin=admin
-        )
+        creator = UserBulkCreator(settings=settings, ledger=ledger, admin=admin)
         result = creator.run(spec)
         from gsm.models.results import ResultKind
 
@@ -209,9 +183,7 @@ class TestUserBulkCreator:
             first_name="X",
             last_name="Y",
         )
-        creator = UserBulkCreator(
-            settings=settings, ledger=ledger, admin=admin
-        )
+        creator = UserBulkCreator(settings=settings, ledger=ledger, admin=admin)
         result = creator.run(spec)
         from gsm.models.results import ResultKind
 

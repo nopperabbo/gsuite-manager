@@ -130,9 +130,7 @@ def test_token_present_in_other_record_returns_propagated(settings):
         instance = MagicMock()
         instance.resolve = fake_resolve
         resolver_cls.return_value = instance
-        result = wait_for_txt(
-            "example.com", "expected-token", settings, sleep=lambda d: None
-        )
+        result = wait_for_txt("example.com", "expected-token", settings, sleep=lambda d: None)
     assert result.propagated is True
 
 

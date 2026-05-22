@@ -28,15 +28,9 @@ def runner():
 @pytest.fixture
 def env(monkeypatch, tmp_path):
     monkeypatch.setenv("GSM_CF_API_TOKEN", "test-token")
-    monkeypatch.setenv(
-        "GSM_CF_ACCOUNT_ID", "0061a056f8cbc860fb9ec99bd41a0ccc"
-    )
-    monkeypatch.setenv(
-        "GSM_GOOGLE_OAUTH_CLIENT_PATH", str(tmp_path / "credentials.json")
-    )
-    monkeypatch.setenv(
-        "GSM_GOOGLE_OAUTH_TOKEN_PATH", str(tmp_path / "token.json")
-    )
+    monkeypatch.setenv("GSM_CF_ACCOUNT_ID", "0061a056f8cbc860fb9ec99bd41a0ccc")
+    monkeypatch.setenv("GSM_GOOGLE_OAUTH_CLIENT_PATH", str(tmp_path / "credentials.json"))
+    monkeypatch.setenv("GSM_GOOGLE_OAUTH_TOKEN_PATH", str(tmp_path / "token.json"))
     monkeypatch.setenv("GSM_LEDGER_PATH", str(tmp_path / "gsm_state.json"))
     monkeypatch.setenv("GSM_DELAY_PER_DOMAIN_SEC", "0")
     monkeypatch.setenv("GSM_DELAY_PER_USER_SEC", "0")
@@ -80,9 +74,7 @@ def _patch_clients(zone_id="z-1"):
     admin_client.create_user.return_value = True
 
     verify_client = MagicMock()
-    verify_client.get_dns_txt_token.return_value = (
-        "google-site-verification=abc"
-    )
+    verify_client.get_dns_txt_token.return_value = "google-site-verification=abc"
     verify_client.verify_domain.return_value = True
 
     return cf_client, admin_client, verify_client
@@ -91,13 +83,14 @@ def _patch_clients(zone_id="z-1"):
 class TestDomainsAddSuccess:
     def test_single_domain_full_pipeline(self, runner, env):
         cf, admin, verify = _patch_clients()
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
-        ), patch(
-            "gsm.cli._shared.GoogleVerifyClient", return_value=verify
-        ), patch(
-            "gsm.workflows.domain_onboarding.wait_for_txt",
-            return_value=_ok_dns(),
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
+            patch("gsm.cli._shared.GoogleVerifyClient", return_value=verify),
+            patch(
+                "gsm.workflows.domain_onboarding.wait_for_txt",
+                return_value=_ok_dns(),
+            ),
         ):
             result = runner.invoke(app, ["domains", "add", "example.com"])
         assert result.exit_code == 0, result.output
@@ -107,17 +100,16 @@ class TestDomainsAddSuccess:
 
     def test_multiple_positional_domains(self, runner, env):
         cf, admin, verify = _patch_clients()
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
-        ), patch(
-            "gsm.cli._shared.GoogleVerifyClient", return_value=verify
-        ), patch(
-            "gsm.workflows.domain_onboarding.wait_for_txt",
-            return_value=_ok_dns(),
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
+            patch("gsm.cli._shared.GoogleVerifyClient", return_value=verify),
+            patch(
+                "gsm.workflows.domain_onboarding.wait_for_txt",
+                return_value=_ok_dns(),
+            ),
         ):
-            result = runner.invoke(
-                app, ["domains", "add", "a.com", "b.com", "c.com"]
-            )
+            result = runner.invoke(app, ["domains", "add", "a.com", "b.com", "c.com"])
         assert result.exit_code == 0
         assert admin.add_domain.call_count == 3
 
@@ -125,29 +117,29 @@ class TestDomainsAddSuccess:
         domains_file = tmp_path / "domains.txt"
         domains_file.write_text("a.com\nb.com\n# comment\n\nc.com\n")
         cf, admin, verify = _patch_clients()
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
-        ), patch(
-            "gsm.cli._shared.GoogleVerifyClient", return_value=verify
-        ), patch(
-            "gsm.workflows.domain_onboarding.wait_for_txt",
-            return_value=_ok_dns(),
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
+            patch("gsm.cli._shared.GoogleVerifyClient", return_value=verify),
+            patch(
+                "gsm.workflows.domain_onboarding.wait_for_txt",
+                return_value=_ok_dns(),
+            ),
         ):
-            result = runner.invoke(
-                app, ["domains", "add", "--file", str(domains_file)]
-            )
+            result = runner.invoke(app, ["domains", "add", "--file", str(domains_file)])
         assert result.exit_code == 0
         assert admin.add_domain.call_count == 3
 
     def test_dns_pending_returns_partial_not_failed(self, runner, env):
         cf, admin, verify = _patch_clients()
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
-        ), patch(
-            "gsm.cli._shared.GoogleVerifyClient", return_value=verify
-        ), patch(
-            "gsm.workflows.domain_onboarding.wait_for_txt",
-            return_value=_failed_dns(),
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
+            patch("gsm.cli._shared.GoogleVerifyClient", return_value=verify),
+            patch(
+                "gsm.workflows.domain_onboarding.wait_for_txt",
+                return_value=_failed_dns(),
+            ),
         ):
             result = runner.invoke(app, ["domains", "add", "slow.com"])
         assert result.exit_code == 0
@@ -185,22 +177,19 @@ class TestDomainsVerifyOnlyPending:
         )
 
         cf, admin, verify = _patch_clients()
-        with patch("gsm.cli._shared.CloudflareClient", return_value=cf), patch(
-            "gsm.cli._shared.GoogleAdminClient", return_value=admin
-        ), patch(
-            "gsm.cli._shared.GoogleVerifyClient", return_value=verify
-        ), patch(
-            "gsm.workflows.domain_onboarding.wait_for_txt",
-            return_value=_ok_dns(),
+        with (
+            patch("gsm.cli._shared.CloudflareClient", return_value=cf),
+            patch("gsm.cli._shared.GoogleAdminClient", return_value=admin),
+            patch("gsm.cli._shared.GoogleVerifyClient", return_value=verify),
+            patch(
+                "gsm.workflows.domain_onboarding.wait_for_txt",
+                return_value=_ok_dns(),
+            ),
         ):
-            result = runner.invoke(
-                app, ["domains", "verify", "--only-pending"]
-            )
+            result = runner.invoke(app, ["domains", "verify", "--only-pending"])
         assert result.exit_code == 0, result.output
         assert verify.verify_domain.call_count == 2
-        called_with = {
-            c.args[0] for c in verify.verify_domain.call_args_list
-        }
+        called_with = {c.args[0] for c in verify.verify_domain.call_args_list}
         assert called_with == {"pending.com", "injected.com"}
 
     def test_only_pending_no_matches_is_clean_exit(self, runner, env):
@@ -227,15 +216,9 @@ class TestDomainsList:
 
     def test_list_status_filter(self, runner, env, tmp_path):
         ledger = Ledger(tmp_path / "gsm_state.json")
-        ledger.upsert_domain(
-            DomainRecord(name="a.com", status=DomainStatus.VERIFIED)
-        )
-        ledger.upsert_domain(
-            DomainRecord(name="b.com", status=DomainStatus.DNS_PENDING)
-        )
-        result = runner.invoke(
-            app, ["domains", "list", "--status", "DNS_PENDING"]
-        )
+        ledger.upsert_domain(DomainRecord(name="a.com", status=DomainStatus.VERIFIED))
+        ledger.upsert_domain(DomainRecord(name="b.com", status=DomainStatus.DNS_PENDING))
+        result = runner.invoke(app, ["domains", "list", "--status", "DNS_PENDING"])
         assert result.exit_code == 0
         assert "b.com" in result.output
         assert "a.com" not in result.output
@@ -253,15 +236,11 @@ class TestUsersAddSuccess:
         )
         _, admin, _ = _patch_clients()
         with patch("gsm.cli._shared.GoogleAdminClient", return_value=admin):
-            result = runner.invoke(
-                app, ["users", "add", "--file", str(akun)]
-            )
+            result = runner.invoke(app, ["users", "add", "--file", str(akun)])
         assert result.exit_code == 0, result.output
         assert admin.create_user.call_count == 3
 
-    def test_add_with_partial_failure_exits_nonzero(
-        self, runner, env, tmp_path
-    ):
+    def test_add_with_partial_failure_exits_nonzero(self, runner, env, tmp_path):
         akun = tmp_path / "akun.txt"
         akun.write_text("a@example.com | pw\nb@example.com | pw\n")
 
@@ -273,17 +252,13 @@ class TestUsersAddSuccess:
             GoogleAdminError("403 forbidden for second"),
         ]
         with patch("gsm.cli._shared.GoogleAdminClient", return_value=admin):
-            result = runner.invoke(
-                app, ["users", "add", "--file", str(akun)]
-            )
+            result = runner.invoke(app, ["users", "add", "--file", str(akun)])
         assert result.exit_code != 0
         assert "failed" in result.output.lower()
 
 
 class TestUsersList:
-    def test_list_with_records_filtered_by_domain(
-        self, runner, env, tmp_path
-    ):
+    def test_list_with_records_filtered_by_domain(self, runner, env, tmp_path):
         ledger = Ledger(tmp_path / "gsm_state.json")
         ledger.upsert_user(
             UserRecord(
@@ -372,31 +347,21 @@ class TestLedgerCommands:
 
     def test_stats_with_records(self, runner, env, tmp_path):
         ledger = Ledger(tmp_path / "gsm_state.json")
-        ledger.upsert_domain(
-            DomainRecord(name="a.com", status=DomainStatus.VERIFIED)
-        )
-        ledger.upsert_domain(
-            DomainRecord(name="b.com", status=DomainStatus.PENDING)
-        )
+        ledger.upsert_domain(DomainRecord(name="a.com", status=DomainStatus.VERIFIED))
+        ledger.upsert_domain(DomainRecord(name="b.com", status=DomainStatus.PENDING))
         result = runner.invoke(app, ["ledger", "stats"])
         assert result.exit_code == 0
         assert "verified" in result.output.lower()
 
     def test_archive_no_old_records(self, runner, env, tmp_path):
         ledger = Ledger(tmp_path / "gsm_state.json")
-        ledger.upsert_domain(
-            DomainRecord(name="recent.com", status=DomainStatus.VERIFIED)
-        )
-        result = runner.invoke(
-            app, ["ledger", "archive", "--older-than-days", "1"]
-        )
+        ledger.upsert_domain(DomainRecord(name="recent.com", status=DomainStatus.VERIFIED))
+        result = runner.invoke(app, ["ledger", "archive", "--older-than-days", "1"])
         assert result.exit_code == 0
         assert "archived 0" in result.output
 
     def test_archive_writes_to_default_path(self, runner, env, tmp_path):
-        result = runner.invoke(
-            app, ["ledger", "archive", "--older-than-days", "1"]
-        )
+        result = runner.invoke(app, ["ledger", "archive", "--older-than-days", "1"])
         assert result.exit_code == 0
 
 

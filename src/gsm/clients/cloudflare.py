@@ -98,9 +98,7 @@ class CloudflareClient:
                     f"network error talking to Cloudflare ({method} {url}): {e}"
                 ) from e
 
-        raise CloudflareError(
-            f"failed after {max_attempts} attempts ({method} {url}): {last_exc}"
-        )
+        raise CloudflareError(f"failed after {max_attempts} attempts ({method} {url}): {last_exc}")
 
     def ensure_zone(self, domain: str) -> ZoneInfo:
         """Create zone or fetch existing one. Returns ZoneInfo with nameservers populated.
@@ -145,9 +143,7 @@ class CloudflareClient:
                 },
             )
             if not data.get("success"):
-                msg = "; ".join(
-                    e.get("message", "?") for e in data.get("errors", [])
-                )
+                msg = "; ".join(e.get("message", "?") for e in data.get("errors", []))
                 raise CloudflareError(f"failed to list zones: {msg}")
             for zone in data.get("result", []):
                 all_zones.append(
@@ -168,9 +164,7 @@ class CloudflareClient:
     def get_email_routing_status(self, zone_id: str) -> bool | None:
         """Return True if Email Routing enabled, False if disabled, None if unset."""
         try:
-            data = self._request(
-                "GET", f"{CF_BASE_URL}/zones/{zone_id}/email/routing"
-            )
+            data = self._request("GET", f"{CF_BASE_URL}/zones/{zone_id}/email/routing")
         except CloudflareError:
             return None
         if not data.get("success"):
@@ -186,9 +180,7 @@ class CloudflareClient:
         Returns True if disabled (or was already disabled), raises on hard failure.
         Required before injecting custom MX records (Workspace integration).
         """
-        data = self._request(
-            "POST", f"{CF_BASE_URL}/zones/{zone_id}/email/routing/disable"
-        )
+        data = self._request("POST", f"{CF_BASE_URL}/zones/{zone_id}/email/routing/disable")
         if data.get("success"):
             return True
         for err in data.get("errors", []):
@@ -196,9 +188,7 @@ class CloudflareClient:
             if "not enabled" in msg or "already disabled" in msg or "unconfigured" in msg:
                 return True
         msg = "; ".join(e.get("message", "?") for e in data.get("errors", []))
-        raise CloudflareError(
-            f"failed to disable email routing on zone {zone_id}: {msg}"
-        )
+        raise CloudflareError(f"failed to disable email routing on zone {zone_id}: {msg}")
 
     def upsert_dns_record(
         self,
@@ -270,9 +260,7 @@ class CloudflareClient:
         url = f"{CF_BASE_URL}/zones"
         data = self._request("GET", url, params={"name": domain})
         if not data.get("success"):
-            msg = "; ".join(
-                e.get("message", "Unknown") for e in data.get("errors", [])
-            )
+            msg = "; ".join(e.get("message", "Unknown") for e in data.get("errors", []))
             raise CloudflareError(f"failed to query zone {domain}: {msg}")
         results: list[dict[str, Any]] = data.get("result", [])
         if not results:

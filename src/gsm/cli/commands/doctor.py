@@ -68,9 +68,7 @@ def doctor_command() -> None:
 
 def _check_oauth_client(configured_path: Path) -> CheckResult:
     if configured_path.exists():
-        return CheckResult(
-            "oauth_client", True, f"found at {configured_path}"
-        )
+        return CheckResult("oauth_client", True, f"found at {configured_path}")
     detected = detect_oauth_client_file(configured_path.parent or Path.cwd())
     if detected is None:
         return CheckResult(
@@ -78,9 +76,7 @@ def _check_oauth_client(configured_path: Path) -> CheckResult:
             False,
             f"not found at {configured_path} and no client_secret_*.json detected",
         )
-    return CheckResult(
-        "oauth_client", True, f"detected at {detected} (configured path missing)"
-    )
+    return CheckResult("oauth_client", True, f"detected at {detected} (configured path missing)")
 
 
 def _check_cloudflare(token: str) -> CheckResult:
@@ -93,12 +89,8 @@ def _check_cloudflare(token: str) -> CheckResult:
         data = resp.json()
         if data.get("success"):
             status = data.get("result", {}).get("status", "unknown")
-            return CheckResult(
-                "cloudflare", True, f"token valid (status={status})"
-            )
-        msg = "; ".join(
-            e.get("message", "?") for e in data.get("errors", [])
-        )
+            return CheckResult("cloudflare", True, f"token valid (status={status})")
+        msg = "; ".join(e.get("message", "?") for e in data.get("errors", []))
         return CheckResult("cloudflare", False, f"token invalid: {msg}")
     except requests.RequestException as e:
         return CheckResult("cloudflare", False, f"request failed: {e}")
@@ -117,9 +109,7 @@ def _check_dns_resolvers(resolvers: list[str]) -> CheckResult:
         except (dns.exception.DNSException, OSError):
             continue
     if not healthy:
-        return CheckResult(
-            "dns_resolvers", False, f"none of {resolvers} reachable"
-        )
+        return CheckResult("dns_resolvers", False, f"none of {resolvers} reachable")
     return CheckResult(
         "dns_resolvers",
         True,

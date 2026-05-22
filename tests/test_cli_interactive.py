@@ -10,9 +10,9 @@ from typer.testing import CliRunner
 from gsm.cli import app
 
 MENU_PROMPT = "gsm.cli.commands.menu.Prompt.ask"
-MENU_CONFIRM = "rich.prompt.Confirm.ask"
-MENU_CTX = "gsm.cli._shared.get_context"
-MENU_RENDER = "gsm.cli._shared.render_results"
+MENU_CONFIRM = "gsm.cli.commands.menu.Confirm.ask"
+MENU_CTX = "gsm.cli.commands.menu.get_context"
+MENU_RENDER = "gsm.cli.commands.menu.render_results"
 
 
 @pytest.fixture
@@ -273,13 +273,11 @@ class TestMenuAliases:
         assert result.exit_code == 0
         runtime.admin.remove_alias.assert_called_once()
 
+        # ─── Menu: choices 9-19 (ctx.invoke dispatches) ─────────────────────────────
 
-# ─── Menu: choices 9-19 (ctx.invoke dispatches) ─────────────────────────────
-
-
-# Menu choices 10-19 are trivial ctx.invoke dispatches — covered by the
-# individual command tests in test_cli_commands.py. Testing them here would
-# require a full typer Context which is complex to mock correctly.
+        # Menu choices 10-19 are trivial ctx.invoke dispatches — covered by the
+        # individual command tests in test_cli_commands.py. Testing them here would
+        # require a full typer Context which is complex to mock correctly.
         assert result.exit_code == 0
 
 

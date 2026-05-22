@@ -49,19 +49,13 @@ class GoogleVerifyClient:
                 .execute()
             )
         except HttpError as e:
-            raise GoogleVerifyError(
-                f"failed to fetch TXT token for {domain}: {e}"
-            ) from e
+            raise GoogleVerifyError(f"failed to fetch TXT token for {domain}: {e}") from e
         except (TimeoutError, OSError) as e:
-            raise GoogleVerifyError(
-                f"network error fetching TXT token for {domain}: {e}"
-            ) from e
+            raise GoogleVerifyError(f"network error fetching TXT token for {domain}: {e}") from e
 
         token = response.get("token")
         if not token:
-            raise GoogleVerifyError(
-                f"empty token response for {domain}: {response}"
-            )
+            raise GoogleVerifyError(f"empty token response for {domain}: {response}")
         return str(token)
 
     def verify_domain(self, domain: str) -> bool:
@@ -81,10 +75,6 @@ class GoogleVerifyClient:
             payload = http_error_payload(e)
             if "already verified" in payload:
                 return True
-            raise GoogleVerifyError(
-                f"verification failed for {domain}: {e}"
-            ) from e
+            raise GoogleVerifyError(f"verification failed for {domain}: {e}") from e
         except (TimeoutError, OSError) as e:
-            raise GoogleVerifyError(
-                f"network error verifying {domain}: {e}"
-            ) from e
+            raise GoogleVerifyError(f"network error verifying {domain}: {e}") from e

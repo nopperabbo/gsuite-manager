@@ -188,9 +188,7 @@ from rich.progress import (  # noqa: E402
 
 
 @contextmanager
-def batch_progress(
-    label: str, total: int
-) -> Iterator[Callable[[int, int, str, Any], None]]:
+def batch_progress(label: str, total: int) -> Iterator[Callable[[int, int, str, Any], None]]:
     """Context manager that yields an `on_progress(idx, total, ident, result)` callback.
 
     Renders a Rich progress bar with ETA, item counter, and last-item status.

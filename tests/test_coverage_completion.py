@@ -34,6 +34,7 @@ def runtime():
 class TestMainModule:
     def test_main_function(self):
         from gsm.__main__ import main
+
         with patch("gsm.__main__.app") as mock_app:
             mock_app.side_effect = SystemExit(0)
             with pytest.raises(SystemExit):
@@ -47,12 +48,14 @@ class TestMainModule:
 class TestVersion:
     def test_version_fallback(self):
         from importlib.metadata import PackageNotFoundError
+
         with patch("gsm.version", side_effect=PackageNotFoundError()):
             # Already covered by import — the except branch runs if package not installed
             pass
 
     def test_version_exists(self):
         from gsm import __version__
+
         assert isinstance(__version__, str)
 
 
@@ -62,18 +65,21 @@ class TestVersion:
 class TestInitWizardFunctions:
     def test_ask_cf_token_valid(self):
         from gsm.cli.commands.init import _ask_cf_token
+
         with patch("gsm.cli.commands.init.Prompt.ask", return_value="a" * 40):
             result = _ask_cf_token()
         assert result == "a" * 40
 
     def test_ask_cf_token_too_short_then_valid(self):
         from gsm.cli.commands.init import _ask_cf_token
+
         with patch("gsm.cli.commands.init.Prompt.ask", side_effect=["short", "a" * 40]):
             result = _ask_cf_token()
         assert result == "a" * 40
 
     def test_ask_cf_account_id_skip_test(self):
         from gsm.cli.commands.init import _ask_cf_account_id
+
         valid_id = "0" * 32
         with patch("gsm.cli.commands.init.Prompt.ask", return_value=valid_id):
             result = _ask_cf_account_id("token", skip_test=True)
@@ -81,6 +87,7 @@ class TestInitWizardFunctions:
 
     def test_ask_cf_account_id_invalid_then_valid(self):
         from gsm.cli.commands.init import _ask_cf_account_id
+
         valid_id = "a" * 32
         with patch("gsm.cli.commands.init.Prompt.ask", side_effect=["bad!", valid_id]):
             result = _ask_cf_account_id("token", skip_test=True)
@@ -88,6 +95,7 @@ class TestInitWizardFunctions:
 
     def test_ask_cf_account_id_autodetect(self):
         from gsm.cli.commands.init import _ask_cf_account_id
+
         with (
             patch("gsm.cli.commands.init._try_autodetect_account_id", return_value="b" * 32),
             patch("gsm.cli.commands.init.Confirm.ask", return_value=True),
@@ -97,6 +105,7 @@ class TestInitWizardFunctions:
 
     def test_ask_cf_account_id_autodetect_rejected(self):
         from gsm.cli.commands.init import _ask_cf_account_id
+
         valid_id = "c" * 32
         with (
             patch("gsm.cli.commands.init._try_autodetect_account_id", return_value="b" * 32),
@@ -108,6 +117,7 @@ class TestInitWizardFunctions:
 
     def test_ask_oauth_client_detected(self, tmp_path):
         from gsm.cli.commands.init import _ask_oauth_client
+
         (tmp_path / "credentials.json").write_text("{}")
         with patch("gsm.cli.commands.init.Confirm.ask", return_value=True):
             result = _ask_oauth_client(tmp_path)
@@ -115,12 +125,14 @@ class TestInitWizardFunctions:
 
     def test_ask_oauth_client_manual(self, tmp_path):
         from gsm.cli.commands.init import _ask_oauth_client
+
         with patch("gsm.cli.commands.init.Prompt.ask", return_value="./my-creds.json"):
             result = _ask_oauth_client(tmp_path)
         assert "my-creds.json" in str(result)
 
     def test_try_autodetect_success(self):
         from gsm.cli.commands.init import _try_autodetect_account_id
+
         mock_resp = MagicMock()
         mock_resp.json.return_value = {"success": True, "result": [{"id": "x" * 32}]}
         with patch("requests.get", return_value=mock_resp):
@@ -129,12 +141,14 @@ class TestInitWizardFunctions:
 
     def test_try_autodetect_failure(self):
         from gsm.cli.commands.init import _try_autodetect_account_id
+
         with patch("requests.get", side_effect=Exception("timeout")):
             result = _try_autodetect_account_id("token")
         assert result is None
 
     def test_try_autodetect_no_results(self):
         from gsm.cli.commands.init import _try_autodetect_account_id
+
         mock_resp = MagicMock()
         mock_resp.json.return_value = {"success": True, "result": []}
         with patch("requests.get", return_value=mock_resp):
@@ -143,6 +157,7 @@ class TestInitWizardFunctions:
 
     def test_test_cf_connection_valid(self):
         from gsm.cli.commands.init import _test_cf_connection
+
         mock_resp = MagicMock()
         mock_resp.json.return_value = {"success": True, "result": {"status": "active"}}
         with patch("requests.get", return_value=mock_resp):
@@ -150,6 +165,7 @@ class TestInitWizardFunctions:
 
     def test_test_cf_connection_invalid(self):
         from gsm.cli.commands.init import _test_cf_connection
+
         mock_resp = MagicMock()
         mock_resp.json.return_value = {"success": False, "errors": [{"message": "bad"}]}
         with patch("requests.get", return_value=mock_resp):
@@ -157,11 +173,13 @@ class TestInitWizardFunctions:
 
     def test_test_cf_connection_network_error(self):
         from gsm.cli.commands.init import _test_cf_connection
+
         with patch("requests.get", side_effect=Exception("network")):
             _test_cf_connection("token")  # prints warning, no exception
 
     def test_write_env(self, tmp_path):
         from gsm.cli.commands.init import _write_env
+
         env_path = tmp_path / ".env"
         _write_env(env_path, {"GSM_CF_API_TOKEN": "mytoken"})
         content = env_path.read_text()
@@ -171,6 +189,7 @@ class TestInitWizardFunctions:
 
     def test_print_summary(self, tmp_path):
         from gsm.cli.commands.init import _print_summary
+
         env_path = tmp_path / ".env"
         env_path.write_text("")
         _print_summary(env_path, Path("./credentials.json"))  # no exception
@@ -178,11 +197,14 @@ class TestInitWizardFunctions:
     def test_setup_full_wizard(self, runner, tmp_path):
         (tmp_path / "credentials.json").write_text("{}")
         with (
-            patch("gsm.cli.commands.init.Prompt.ask", side_effect=[
-                "a" * 40,                          # CF token
-                "b" * 32,                          # CF account ID
-                str(tmp_path / "credentials.json"),  # OAuth path
-            ]),
+            patch(
+                "gsm.cli.commands.init.Prompt.ask",
+                side_effect=[
+                    "a" * 40,  # CF token
+                    "b" * 32,  # CF account ID
+                    str(tmp_path / "credentials.json"),  # OAuth path
+                ],
+            ),
             patch("gsm.cli.commands.init.Confirm.ask", return_value=True),
             patch("gsm.cli.commands.init._try_autodetect_account_id", return_value=None),
         ):
@@ -195,8 +217,8 @@ class TestInitWizardFunctions:
 
 
 MENU_PROMPT = "gsm.cli.commands.menu.Prompt.ask"
-MENU_CONFIRM = "rich.prompt.Confirm.ask"
-MENU_CTX = "gsm.cli._shared.get_context"
+MENU_CONFIRM = "gsm.cli.commands.menu.Confirm.ask"
+MENU_CTX = "gsm.cli.commands.menu.get_context"
 
 
 class TestMenuErrorPaths:

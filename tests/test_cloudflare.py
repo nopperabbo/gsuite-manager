@@ -7,18 +7,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from gsm.clients.cloudflare import CloudflareClient, CloudflareError
-from gsm.core.config import Settings
-
-
-@pytest.fixture
-def settings(tmp_path):
-    return Settings(
-        cf_api_token="dummy-token",
-        cf_account_id="0061a056f8cbc860fb9ec99bd41a0ccc",
-        google_oauth_client_path=tmp_path / "credentials.json",
-        google_oauth_token_path=tmp_path / "token.json",
-        ledger_path=tmp_path / "gsm_state.json",
-    )
 
 
 @pytest.fixture
@@ -92,7 +80,10 @@ class TestEnsureZone:
     def test_unknown_error_raises(self, client):
         post_resp = MagicMock()
         post_resp.json.return_value = _err(9999, "weird error")
-        with patch.object(client._session, "request", return_value=post_resp), pytest.raises(CloudflareError) as exc:
+        with (
+            patch.object(client._session, "request", return_value=post_resp),
+            pytest.raises(CloudflareError) as exc,
+        ):
             client.ensure_zone("example.com")
         assert "weird error" in str(exc.value)
 
@@ -141,7 +132,10 @@ class TestUpsertDnsRecord:
     def test_unknown_error_raises(self, client):
         resp = MagicMock()
         resp.json.return_value = _err(1234, "permission denied")
-        with patch.object(client._session, "request", return_value=resp), pytest.raises(CloudflareError):
+        with (
+            patch.object(client._session, "request", return_value=resp),
+            pytest.raises(CloudflareError),
+        ):
             client.upsert_dns_record(
                 "zone-1",
                 record_type="MX",
@@ -183,31 +177,38 @@ class TestRequestWrapping:
     def test_timeout_wrapped(self, client):
         import requests
 
-        with patch.object(
-            client._session,
-            "request",
-            side_effect=requests.Timeout("timeout"),
-        ), pytest.raises(CloudflareError) as exc:
+        with (
+            patch.object(
+                client._session,
+                "request",
+                side_effect=requests.Timeout("timeout"),
+            ),
+            pytest.raises(CloudflareError) as exc,
+        ):
             client.ensure_zone("example.com")
         assert "network error" in str(exc.value).lower()
 
     def test_connection_error_wrapped(self, client):
         import requests
 
-        with patch.object(
-            client._session,
-            "request",
-            side_effect=requests.ConnectionError("conn refused"),
-        ), pytest.raises(CloudflareError):
+        with (
+            patch.object(
+                client._session,
+                "request",
+                side_effect=requests.ConnectionError("conn refused"),
+            ),
+            pytest.raises(CloudflareError),
+        ):
             client.ensure_zone("example.com")
 
     def test_non_json_response_wrapped(self, client):
         bad_resp = MagicMock()
         bad_resp.status_code = 502
         bad_resp.json.side_effect = ValueError("not json")
-        with patch.object(
-            client._session, "request", return_value=bad_resp
-        ), pytest.raises(CloudflareError) as exc:
+        with (
+            patch.object(client._session, "request", return_value=bad_resp),
+            pytest.raises(CloudflareError) as exc,
+        ):
             client.ensure_zone("example.com")
         assert "non-JSON" in str(exc.value) or "502" in str(exc.value)
 
@@ -263,5 +264,8 @@ class TestEmailRouting:
             "success": False,
             "errors": [{"code": 9999, "message": "Internal error"}],
         }
-        with patch.object(client._session, "request", return_value=resp), pytest.raises(CloudflareError):
+        with (
+            patch.object(client._session, "request", return_value=resp),
+            pytest.raises(CloudflareError),
+        ):
             client.disable_email_routing("zone-1")

@@ -111,9 +111,7 @@ class TestIdempotency:
         cf, admin, verify = mock_clients
         from gsm.models.domain import DomainRecord
 
-        ledger.upsert_domain(
-            DomainRecord(name="done.com", status=DomainStatus.VERIFIED)
-        )
+        ledger.upsert_domain(DomainRecord(name="done.com", status=DomainStatus.VERIFIED))
 
         onboarder = DomainOnboarder(
             settings=settings,
@@ -134,9 +132,7 @@ class TestDnsRaceCondition:
     PARTIAL if it never propagates within max attempts.
     """
 
-    def test_dns_not_propagated_returns_partial(
-        self, settings, ledger, mock_clients
-    ):
+    def test_dns_not_propagated_returns_partial(self, settings, ledger, mock_clients):
         cf, admin, verify = mock_clients
         with patch(
             "gsm.workflows.domain_onboarding.wait_for_txt",
@@ -158,9 +154,7 @@ class TestDnsRaceCondition:
         assert record.status is DomainStatus.DNS_PENDING
         verify.verify_domain.assert_not_called()
 
-    def test_retry_after_dns_pending_completes(
-        self, settings, ledger, mock_clients
-    ):
+    def test_retry_after_dns_pending_completes(self, settings, ledger, mock_clients):
         cf, admin, verify = mock_clients
 
         with patch(
@@ -195,9 +189,7 @@ class TestDnsRaceCondition:
 
 
 class TestErrorPaths:
-    def test_admin_error_is_failed_result(
-        self, settings, ledger, mock_clients
-    ):
+    def test_admin_error_is_failed_result(self, settings, ledger, mock_clients):
         cf, admin, verify = mock_clients
         admin.add_domain.side_effect = GoogleAdminError("403 forbidden")
 
@@ -212,9 +204,7 @@ class TestErrorPaths:
         assert result.kind is ResultKind.FAILED
         assert "403 forbidden" in result.message
 
-    def test_cloudflare_error_is_failed_result(
-        self, settings, ledger, mock_clients
-    ):
+    def test_cloudflare_error_is_failed_result(self, settings, ledger, mock_clients):
         cf, admin, verify = mock_clients
         cf.ensure_zone.side_effect = CloudflareError("rate limited")
 
@@ -229,17 +219,13 @@ class TestErrorPaths:
         assert result.kind is ResultKind.FAILED
         assert "rate limit" in result.message.lower()
 
-    def test_verify_error_is_failed_result(
-        self, settings, ledger, mock_clients
-    ):
+    def test_verify_error_is_failed_result(self, settings, ledger, mock_clients):
         cf, admin, verify = mock_clients
         with patch(
             "gsm.workflows.domain_onboarding.wait_for_txt",
             return_value=_ok_dns(),
         ):
-            verify.verify_domain.side_effect = GoogleVerifyError(
-                "token mismatch"
-            )
+            verify.verify_domain.side_effect = GoogleVerifyError("token mismatch")
             onboarder = DomainOnboarder(
                 settings=settings,
                 ledger=ledger,
@@ -272,11 +258,8 @@ class TestBatchOnboarding:
         assert admin.add_domain.call_count == 3
 
 
-
 class TestEmailRoutingHandling:
-    def test_disables_email_routing_before_mx_inject(
-        self, settings, ledger, mock_clients
-    ):
+    def test_disables_email_routing_before_mx_inject(self, settings, ledger, mock_clients):
         cf, admin, verify = mock_clients
         cf.get_email_routing_status.return_value = True
 
@@ -297,9 +280,7 @@ class TestEmailRoutingHandling:
         cf.disable_email_routing.assert_called_once_with("z-1")
         assert cf.upsert_dns_record.call_count >= 5
 
-    def test_skips_disable_when_routing_off(
-        self, settings, ledger, mock_clients
-    ):
+    def test_skips_disable_when_routing_off(self, settings, ledger, mock_clients):
         cf, admin, verify = mock_clients
         cf.get_email_routing_status.return_value = False
 
@@ -324,34 +305,41 @@ class TestPreflight:
 
     def test_valid_domain_passes(self):
         from gsm.workflows.domain_onboarding import _preflight_domain
+
         assert _preflight_domain("example.com") is None
         assert _preflight_domain("sub.example.co.id") is None
 
     def test_empty_rejected(self):
         from gsm.workflows.domain_onboarding import _preflight_domain
+
         assert _preflight_domain("") is not None
         assert _preflight_domain("   ") is not None
 
     def test_uppercase_rejected_with_suggestion(self):
         from gsm.workflows.domain_onboarding import _preflight_domain
+
         result = _preflight_domain("Example.com")
         assert result is not None
         assert "example.com" in result
 
     def test_whitespace_rejected(self):
         from gsm.workflows.domain_onboarding import _preflight_domain
+
         assert _preflight_domain("  example.com  ") is not None
 
     def test_no_tld_rejected(self):
         from gsm.workflows.domain_onboarding import _preflight_domain
+
         assert _preflight_domain("example") is not None
 
     def test_url_with_protocol_rejected(self):
         from gsm.workflows.domain_onboarding import _preflight_domain
+
         assert _preflight_domain("https://example.com") is not None
 
     def test_www_prefix_warned(self):
         from gsm.workflows.domain_onboarding import _preflight_domain
+
         result = _preflight_domain("www.example.com")
         assert result is not None
         assert "www" in result.lower() or "apex" in result.lower()

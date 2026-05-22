@@ -30,23 +30,17 @@ class TestCsvListParsing:
     """
 
     def test_resolvers_accept_csv(self, tmp_path: Path) -> None:
-        env_file = _write_env(
-            tmp_path, GSM_DNS_CHECK_RESOLVERS="8.8.8.8,1.1.1.1,9.9.9.9"
-        )
+        env_file = _write_env(tmp_path, GSM_DNS_CHECK_RESOLVERS="8.8.8.8,1.1.1.1,9.9.9.9")
         settings = load_settings(env_file=env_file)
         assert settings.dns_check_resolvers == ["8.8.8.8", "1.1.1.1", "9.9.9.9"]
 
     def test_resolvers_csv_strips_whitespace(self, tmp_path: Path) -> None:
-        env_file = _write_env(
-            tmp_path, GSM_DNS_CHECK_RESOLVERS="8.8.8.8 , 1.1.1.1 ,  9.9.9.9"
-        )
+        env_file = _write_env(tmp_path, GSM_DNS_CHECK_RESOLVERS="8.8.8.8 , 1.1.1.1 ,  9.9.9.9")
         settings = load_settings(env_file=env_file)
         assert settings.dns_check_resolvers == ["8.8.8.8", "1.1.1.1", "9.9.9.9"]
 
     def test_resolvers_csv_skips_empty_segments(self, tmp_path: Path) -> None:
-        env_file = _write_env(
-            tmp_path, GSM_DNS_CHECK_RESOLVERS="8.8.8.8,,1.1.1.1,"
-        )
+        env_file = _write_env(tmp_path, GSM_DNS_CHECK_RESOLVERS="8.8.8.8,,1.1.1.1,")
         settings = load_settings(env_file=env_file)
         assert settings.dns_check_resolvers == ["8.8.8.8", "1.1.1.1"]
 
@@ -56,38 +50,28 @@ class TestCsvListParsing:
         assert settings.dns_check_resolvers == ["8.8.8.8", "1.1.1.1"]
 
     def test_backoff_accepts_csv_ints(self, tmp_path: Path) -> None:
-        env_file = _write_env(
-            tmp_path, GSM_DNS_CHECK_BACKOFF_SEC="10,20,30,45,60"
-        )
+        env_file = _write_env(tmp_path, GSM_DNS_CHECK_BACKOFF_SEC="10,20,30,45,60")
         settings = load_settings(env_file=env_file)
         assert settings.dns_check_backoff_sec == [10, 20, 30, 45, 60]
 
     def test_backoff_csv_strips_whitespace(self, tmp_path: Path) -> None:
-        env_file = _write_env(
-            tmp_path, GSM_DNS_CHECK_BACKOFF_SEC=" 5 , 10 , 15 "
-        )
+        env_file = _write_env(tmp_path, GSM_DNS_CHECK_BACKOFF_SEC=" 5 , 10 , 15 ")
         settings = load_settings(env_file=env_file)
         assert settings.dns_check_backoff_sec == [5, 10, 15]
 
     def test_backoff_rejects_zero(self, tmp_path: Path) -> None:
-        env_file = _write_env(
-            tmp_path, GSM_DNS_CHECK_BACKOFF_SEC="10,0,30"
-        )
+        env_file = _write_env(tmp_path, GSM_DNS_CHECK_BACKOFF_SEC="10,0,30")
         with pytest.raises(ValidationError) as exc:
             load_settings(env_file=env_file)
         assert "positive" in str(exc.value)
 
     def test_backoff_rejects_negative(self, tmp_path: Path) -> None:
-        env_file = _write_env(
-            tmp_path, GSM_DNS_CHECK_BACKOFF_SEC="10,-5,30"
-        )
+        env_file = _write_env(tmp_path, GSM_DNS_CHECK_BACKOFF_SEC="10,-5,30")
         with pytest.raises(ValidationError):
             load_settings(env_file=env_file)
 
     def test_backoff_rejects_non_integer(self, tmp_path: Path) -> None:
-        env_file = _write_env(
-            tmp_path, GSM_DNS_CHECK_BACKOFF_SEC="10,abc,30"
-        )
+        env_file = _write_env(tmp_path, GSM_DNS_CHECK_BACKOFF_SEC="10,abc,30")
         with pytest.raises(ValidationError):
             load_settings(env_file=env_file)
 
@@ -99,9 +83,7 @@ class TestSettingsLoad:
         assert settings.cf_api_token.get_secret_value() == VALID_CF_TOKEN
         assert settings.cf_account_id == VALID_CF_ACCOUNT_ID
 
-    def test_load_from_env_vars(
-        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-    ) -> None:
+    def test_load_from_env_vars(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         monkeypatch.chdir(tmp_path)
         monkeypatch.setenv("GSM_CF_API_TOKEN", VALID_CF_TOKEN)
         monkeypatch.setenv("GSM_CF_ACCOUNT_ID", VALID_CF_ACCOUNT_ID)
@@ -169,9 +151,7 @@ class TestSecretMasking:
 
 
 class TestMissingRequired:
-    def test_missing_cf_token_raises(
-        self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path
-    ) -> None:
+    def test_missing_cf_token_raises(self, monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
         monkeypatch.chdir(tmp_path)
         for var in ("GSM_CF_API_TOKEN", "GSM_CF_ACCOUNT_ID"):
             monkeypatch.delenv(var, raising=False)

@@ -20,7 +20,9 @@ def settings(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Settings:
     return Settings()  # type: ignore[call-arg]
 
 
-def _make_creds(*, valid: bool = True, expired: bool = False, has_refresh: bool = True) -> MagicMock:
+def _make_creds(
+    *, valid: bool = True, expired: bool = False, has_refresh: bool = True
+) -> MagicMock:
     creds = MagicMock()
     creds.valid = valid
     creds.expired = expired

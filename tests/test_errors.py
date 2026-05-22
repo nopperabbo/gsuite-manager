@@ -32,9 +32,7 @@ class TestHumanize:
         assert "Google Cloud Console" in (result.hint or "")
 
     def test_dns_propagation_pending(self):
-        result = humanize(
-            "verification token could not be found on your site"
-        )
+        result = humanize("verification token could not be found on your site")
         assert "TXT" in result.summary
         assert "verify --only-pending" in (result.hint or "")
 

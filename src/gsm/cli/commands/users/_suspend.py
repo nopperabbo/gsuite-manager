@@ -51,7 +51,9 @@ def users_suspend(
 def users_unsuspend(
     ctx: typer.Context,
     file: Path | None = typer.Option(None, "--file", "-f", help="File with emails to unsuspend."),
-    domain: str | None = typer.Option(None, "--domain", "-d", help="Unsuspend ALL users in domain."),
+    domain: str | None = typer.Option(
+        None, "--domain", "-d", help="Unsuspend ALL users in domain."
+    ),
     dry_run: bool = typer.Option(False, "--dry-run", help="Preview tanpa apply."),
 ) -> None:
     """Bulk unsuspend users (re-enable login). Idempotent."""

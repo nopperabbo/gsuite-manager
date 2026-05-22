@@ -51,10 +51,10 @@ def ledger_archive(
     """Move stale ledger entries into an archive file (idempotent, atomic)."""
     runtime = get_context(ctx)
     cutoff = datetime.now() - timedelta(days=older_than_days)
-    target = Path(archive_to) if archive_to else runtime.ledger.path.with_name(
-        runtime.ledger.path.name + ".archive.json"
+    target = (
+        Path(archive_to)
+        if archive_to
+        else runtime.ledger.path.with_name(runtime.ledger.path.name + ".archive.json")
     )
     moved = runtime.ledger.archive(before=cutoff, archive_path=target)
-    typer.echo(
-        f"archived {moved} record(s) older than {older_than_days}d -> {target}"
-    )
+    typer.echo(f"archived {moved} record(s) older than {older_than_days}d -> {target}")

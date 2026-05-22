@@ -108,9 +108,6 @@ def _query_txt(domain: str, resolver_ip: str, timeout: float) -> list[str]:
 
     values: list[str] = []
     for rdata in answer:
-        parts = [
-            s.decode("utf-8") if isinstance(s, bytes) else str(s)
-            for s in rdata.strings
-        ]
+        parts = [s.decode("utf-8") if isinstance(s, bytes) else str(s) for s in rdata.strings]
         values.append("".join(parts))
     return values

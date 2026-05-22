@@ -73,7 +73,7 @@ class TestConfigure:
         log.debug("hidden")
         log.info("visible")
 
-        out = (capsys.readouterr().out + capsys.readouterr().err)
+        out = capsys.readouterr().out + capsys.readouterr().err
         assert "visible" in out
         assert "hidden" not in out
 

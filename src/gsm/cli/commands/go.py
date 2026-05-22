@@ -127,8 +127,7 @@ def _print_summary(
         us = sum(1 for r in user_results if r.kind == ResultKind.SUCCESS)
         uf = sum(1 for r in user_results if r.kind == ResultKind.FAILED)
         parts.append(
-            f"Users: [green]{us} created[/green]"
-            + (f"  [red]{uf} failed[/red]" if uf else "")
+            f"Users: [green]{us} created[/green]" + (f"  [red]{uf} failed[/red]" if uf else "")
         )
 
     if not parts:
@@ -138,9 +137,8 @@ def _print_summary(
         Panel.fit(
             "\n".join(parts),
             title="[bold]Summary[/bold]",
-            border_style="green" if all(
-                r.kind != ResultKind.FAILED
-                for r in [*domain_results, *user_results]
-            ) else "yellow",
+            border_style="green"
+            if all(r.kind != ResultKind.FAILED for r in [*domain_results, *user_results])
+            else "yellow",
         )
     )

@@ -74,9 +74,7 @@ class DomainOnboarder:
 
         if record.status is DomainStatus.VERIFIED:
             self._log.info("domain_already_verified", domain=domain)
-            return ItemResult.skipped(
-                domain, "already verified", status=record.status.value
-            )
+            return ItemResult.skipped(domain, "already verified", status=record.status.value)
 
         try:
             self._step_add_to_gsuite(record)
@@ -128,9 +126,7 @@ class DomainOnboarder:
                 status=record.status.value,
                 error=str(e),
             )
-            return ItemResult.failed(
-                domain, humanize(e).render(), status=record.status.value
-            )
+            return ItemResult.failed(domain, humanize(e).render(), status=record.status.value)
 
     def _step_add_to_gsuite(self, record: DomainRecord) -> None:
         if record.status not in (
@@ -171,9 +167,7 @@ class DomainOnboarder:
         self._save(record)
         return _ZoneSnapshot(zone.zone_id, list(zone.nameservers))
 
-    def _step_inject_dns(
-        self, record: DomainRecord, zone_id: str, token: str
-    ) -> None:
+    def _step_inject_dns(self, record: DomainRecord, zone_id: str, token: str) -> None:
         if record.status is DomainStatus.DNS_INJECTED or record.status is DomainStatus.DNS_PENDING:
             return
         self._log.info("step_inject_dns", domain=record.name, zone_id=zone_id)
@@ -204,9 +198,7 @@ class DomainOnboarder:
         record.status = DomainStatus.DNS_INJECTED
         self._save(record)
 
-    def _step_wait_for_dns(
-        self, record: DomainRecord, token: str
-    ) -> DnsCheckResult:
+    def _step_wait_for_dns(self, record: DomainRecord, token: str) -> DnsCheckResult:
         self._log.info("step_wait_dns", domain=record.name)
         result = wait_for_txt(record.name, token, self._settings)
         self._log.info(
@@ -254,13 +246,9 @@ def onboard_domains(
 
     on_progress(index, total, domain, result) called after each domain completes.
     """
-    onboarder = DomainOnboarder(
-        settings=settings, ledger=ledger, cf=cf, admin=admin, verify=verify
-    )
+    onboarder = DomainOnboarder(settings=settings, ledger=ledger, cf=cf, admin=admin, verify=verify)
     delay = (
-        delay_per_domain_sec
-        if delay_per_domain_sec is not None
-        else settings.delay_per_domain_sec
+        delay_per_domain_sec if delay_per_domain_sec is not None else settings.delay_per_domain_sec
     )
     results: list[ItemResult] = []
     total = len(domains)
@@ -280,9 +268,7 @@ def onboard_domains(
     return results
 
 
-_DOMAIN_RE = re.compile(
-    r"^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$"
-)
+_DOMAIN_RE = re.compile(r"^(?=.{1,253}$)([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$")
 
 
 def _preflight_domain(domain: str) -> str | None:
@@ -291,15 +277,9 @@ def _preflight_domain(domain: str) -> str | None:
         return "Domain kosong."
     normalized = domain.strip().lower()
     if normalized != domain:
-        return (
-            f"Domain harus huruf kecil tanpa whitespace. "
-            f"Gunakan: {normalized}"
-        )
+        return f"Domain harus huruf kecil tanpa whitespace. Gunakan: {normalized}"
     if not _DOMAIN_RE.match(domain):
-        return (
-            "Format domain tidak valid. "
-            "Contoh benar: 'example.com', 'sub.example.co.id'."
-        )
+        return "Format domain tidak valid. Contoh benar: 'example.com', 'sub.example.co.id'."
     if domain.startswith(("xn--", "www.")):
         return (
             f"Domain '{domain}' kelihatan unusual "

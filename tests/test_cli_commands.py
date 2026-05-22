@@ -227,7 +227,8 @@ class TestUsersCrud:
         out = tmp_path / "creds.txt"
         with patch("gsm.cli.commands.users._crud.get_context", return_value=runtime):
             result = runner.invoke(
-                app, ["users", "reset-password", "--domain", "x.com", "--random", "--output", str(out)]
+                app,
+                ["users", "reset-password", "--domain", "x.com", "--random", "--output", str(out)],
             )
         assert result.exit_code == 0
         assert out.exists()
@@ -633,10 +634,14 @@ class TestUsersCrudExtra:
             result = runner.invoke(
                 app,
                 [
-                    "users", "reset-password",
-                    "--file", str(emails_file),
-                    "--same-password", "Pass123!",
-                    "--output", str(out),
+                    "users",
+                    "reset-password",
+                    "--file",
+                    str(emails_file),
+                    "--same-password",
+                    "Pass123!",
+                    "--output",
+                    str(out),
                 ],
             )
         assert result.exit_code == 0

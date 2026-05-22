@@ -1,12 +1,14 @@
 """Shared constants for Google Workspace DNS records."""
 
-GOOGLE_MX_HOSTS: frozenset[str] = frozenset({
-    "aspmx.l.google.com",
-    "alt1.aspmx.l.google.com",
-    "alt2.aspmx.l.google.com",
-    "alt3.aspmx.l.google.com",
-    "alt4.aspmx.l.google.com",
-})
+GOOGLE_MX_HOSTS: frozenset[str] = frozenset(
+    {
+        "aspmx.l.google.com",
+        "alt1.aspmx.l.google.com",
+        "alt2.aspmx.l.google.com",
+        "alt3.aspmx.l.google.com",
+        "alt4.aspmx.l.google.com",
+    }
+)
 
 GOOGLE_MX_RECORDS: list[dict[str, str | int]] = [
     {"content": "ASPMX.L.GOOGLE.COM", "priority": 1},

@@ -49,9 +49,7 @@ def audit_command(
         err_console.print(f"[red][-][/red] {humanize(e).render()}")
         raise typer.Exit(code=2) from e
     cf_domains = {z.name for z in cf_zones}
-    console.print(
-        f"[green][+][/green] {len(cf_domains)} zone di Cloudflare"
-    )
+    console.print(f"[green][+][/green] {len(cf_domains)} zone di Cloudflare")
 
     console.print("[dim]Mengambil daftar domain dari Google Workspace...[/dim]")
     try:
@@ -70,8 +68,7 @@ def audit_command(
         if raw.get("verified"):
             ws_verified.add(name)
     console.print(
-        f"[green][+][/green] {len(ws_domains)} domain di Workspace "
-        f"({len(ws_verified)} verified)"
+        f"[green][+][/green] {len(ws_domains)} domain di Workspace ({len(ws_verified)} verified)"
     )
 
     cf_only = sorted(cf_domains - ws_domains)
@@ -109,9 +106,7 @@ def audit_command(
 
     if cf_only:
         console.print()
-        console.print(
-            f"[bold red]{len(cf_only)} domain di CF tapi belum di Workspace:[/bold red]"
-        )
+        console.print(f"[bold red]{len(cf_only)} domain di CF tapi belum di Workspace:[/bold red]")
         gap_table = Table(show_header=True, header_style="bold cyan")
         gap_table.add_column("#", justify="right", width=4)
         gap_table.add_column("Domain")
@@ -123,13 +118,8 @@ def audit_command(
             from pathlib import Path
 
             Path(output_file).write_text("\n".join(cf_only) + "\n")
-            console.print(
-                f"\n[green][+][/green] Daftar di-write ke "
-                f"[cyan]{output_file}[/cyan]"
-            )
-            console.print(
-                f"[dim]Run: gsm domains add --file {output_file}[/dim]"
-            )
+            console.print(f"\n[green][+][/green] Daftar di-write ke [cyan]{output_file}[/cyan]")
+            console.print(f"[dim]Run: gsm domains add --file {output_file}[/dim]")
         else:
             console.print(
                 "\n[dim]Tip: tambahin --output <file> untuk simpan list,[/dim]\n"
@@ -156,6 +146,4 @@ def audit_command(
 
     if not cf_only and not ws_only and not both_unverified:
         console.print()
-        console.print(
-            "[bold green]Semua domain udah sinkron dan terverifikasi![/bold green]"
-        )
+        console.print("[bold green]Semua domain udah sinkron dan terverifikasi![/bold green]")

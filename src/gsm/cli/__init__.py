@@ -30,15 +30,9 @@ app.command("go", help="⚡ All-in-one: onboard domains + create users. Auto-det
     go_command
 )
 app.command("menu", help="Interactive menu - pilih fitur manual.")(menu_command)
-app.command("setup", help="Wizard interaktif - setup awal step-by-step.")(
-    setup_command
-)
-app.command("init", help="Tulis .env template kosong (non-interaktif).")(
-    init_command
-)
-app.command("doctor", help="Run health checks against config + connectivity.")(
-    doctor_command
-)
+app.command("setup", help="Wizard interaktif - setup awal step-by-step.")(setup_command)
+app.command("init", help="Tulis .env template kosong (non-interaktif).")(init_command)
+app.command("doctor", help="Run health checks against config + connectivity.")(doctor_command)
 app.command(
     "audit",
     help="Reconcile state: cek domain di CF tapi belum di Workspace (atau sebaliknya).",

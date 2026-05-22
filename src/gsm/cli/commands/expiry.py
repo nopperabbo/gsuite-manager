@@ -33,6 +33,7 @@ def check_expiry_command(
     else:
         records = runtime.ledger.list_domains()
         from gsm.models.domain import DomainStatus
+
         targets = [r.name for r in records if r.status == DomainStatus.VERIFIED]
         if not targets:
             console.print("[yellow]No verified domains in ledger to check.[/yellow]")
@@ -103,7 +104,9 @@ def check_expiry_command(
         console.print(f"[green][+] No domains expiring within {days} days.[/green]")
 
     if errors:
-        console.print(f"\n[dim]{len(errors)} domain(s) couldn't be checked (RDAP unavailable).[/dim]")
+        console.print(
+            f"\n[dim]{len(errors)} domain(s) couldn't be checked (RDAP unavailable).[/dim]"
+        )
 
     console.print(
         f"\n[green]OK: {ok_count}[/green]  "

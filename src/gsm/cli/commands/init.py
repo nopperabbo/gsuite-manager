@@ -37,9 +37,7 @@ def setup_command(
         "--cwd",
         help="Folder tempat .env akan disimpan (default: folder sekarang).",
     ),
-    force: bool = typer.Option(
-        False, "--force", help="Timpa .env yang sudah ada."
-    ),
+    force: bool = typer.Option(False, "--force", help="Timpa .env yang sudah ada."),
     skip_test: bool = typer.Option(
         False,
         "--skip-test",
@@ -52,10 +50,13 @@ def setup_command(
 
     _print_welcome(target)
 
-    if env_path.exists() and not force and not Confirm.ask(
-        f"\n[yellow].env sudah ada di {env_path}.[/yellow] "
-        "Mau timpa dengan setting baru?",
-        default=False,
+    if (
+        env_path.exists()
+        and not force
+        and not Confirm.ask(
+            f"\n[yellow].env sudah ada di {env_path}.[/yellow] Mau timpa dengan setting baru?",
+            default=False,
+        )
     ):
         console.print("[dim]Batal. Gak ada perubahan.[/dim]")
         raise typer.Exit(code=0)
@@ -84,18 +85,14 @@ def init_command(
         "--cwd",
         help="Working directory to scaffold (default: current).",
     ),
-    force: bool = typer.Option(
-        False, "--force", help="Overwrite existing .env (DANGEROUS)."
-    ),
+    force: bool = typer.Option(False, "--force", help="Overwrite existing .env (DANGEROUS)."),
 ) -> None:
     """Non-interaktif: tulis .env template kosong (untuk power user/CI)."""
     target = (cwd or Path.cwd()).resolve()
     env_path = target / ".env"
 
     if env_path.exists() and not force:
-        console.print(
-            f"[yellow][!][/yellow] {env_path} already exists. Use --force to overwrite."
-        )
+        console.print(f"[yellow][!][/yellow] {env_path} already exists. Use --force to overwrite.")
     else:
         env_path.write_text(_ENV_TEMPLATE, encoding="utf-8")
         env_path.chmod(0o600)
@@ -144,9 +141,7 @@ def _print_welcome(target: Path) -> None:
 
 
 def _ask_cf_token() -> str:
-    console.print(
-        "\n[bold cyan]Step 1/3:[/bold cyan] Cloudflare API Token\n"
-    )
+    console.print("\n[bold cyan]Step 1/3:[/bold cyan] Cloudflare API Token\n")
     console.print(
         f"  Buat token baru di: [link={CF_DASHBOARD_URL}]{CF_DASHBOARD_URL}[/link]\n"
         "  Pilih template [cyan]'Edit zone DNS'[/cyan], scope ke [cyan]All zones[/cyan].\n"
@@ -156,24 +151,19 @@ def _ask_cf_token() -> str:
         token = Prompt.ask("  CF API Token", password=True).strip()
         if len(token) < 30:
             err_console.print(
-                "[red]  [-] Token kependekan (CF token biasanya 40+ karakter). "
-                "Coba lagi.[/red]"
+                "[red]  [-] Token kependekan (CF token biasanya 40+ karakter). Coba lagi.[/red]"
             )
             continue
         return token
 
 
 def _ask_cf_account_id(token: str, *, skip_test: bool) -> str:
-    console.print(
-        "\n[bold cyan]Step 2/3:[/bold cyan] Cloudflare Account ID\n"
-    )
+    console.print("\n[bold cyan]Step 2/3:[/bold cyan] Cloudflare Account ID\n")
 
     if not skip_test:
         detected = _try_autodetect_account_id(token)
         if detected:
-            console.print(
-                f"  [green][+][/green] Auto-detect dari token: [cyan]{detected}[/cyan]"
-            )
+            console.print(f"  [green][+][/green] Auto-detect dari token: [cyan]{detected}[/cyan]")
             if Confirm.ask("  Pakai ini?", default=True):
                 return detected
 
@@ -188,23 +178,18 @@ def _ask_cf_account_id(token: str, *, skip_test: bool) -> str:
         account_id = Prompt.ask("  CF Account ID").strip().lower()
         if not re.match(r"^[a-f0-9]{32}$", account_id):
             err_console.print(
-                "[red]  [-] Format salah. Account ID = 32 karakter hex (a-f, 0-9). "
-                "Coba lagi.[/red]"
+                "[red]  [-] Format salah. Account ID = 32 karakter hex (a-f, 0-9). Coba lagi.[/red]"
             )
             continue
         return account_id
 
 
 def _ask_oauth_client(target: Path) -> Path:
-    console.print(
-        "\n[bold cyan]Step 3/3:[/bold cyan] Google OAuth Desktop App credentials\n"
-    )
+    console.print("\n[bold cyan]Step 3/3:[/bold cyan] Google OAuth Desktop App credentials\n")
 
     detected = detect_oauth_client_file(target)
     if detected is not None:
-        console.print(
-            f"  [green][+][/green] Ketemu file OAuth: [cyan]{detected.name}[/cyan]"
-        )
+        console.print(f"  [green][+][/green] Ketemu file OAuth: [cyan]{detected.name}[/cyan]")
         if Confirm.ask("  Pakai ini?", default=True):
             return Path(detected.name) if detected.parent == target else detected
 
@@ -261,13 +246,9 @@ def _test_cf_connection(token: str) -> None:
         data = resp.json()
         if data.get("success"):
             status = data.get("result", {}).get("status", "active")
-            console.print(
-                f"[green][+][/green] CF token VALID (status: {status})"
-            )
+            console.print(f"[green][+][/green] CF token VALID (status: {status})")
         else:
-            errs = "; ".join(
-                e.get("message", "?") for e in data.get("errors", [])
-            )
+            errs = "; ".join(e.get("message", "?") for e in data.get("errors", []))
             err_console.print(f"[red][-][/red] CF token INVALID: {errs}")
             err_console.print(
                 "[yellow]  Setting tetap disimpan, tapi `gsm doctor` "
@@ -294,7 +275,11 @@ def _write_env(env_path: Path, user_values: dict[str, str]) -> None:
 
 
 def _print_summary(env_path: Path, oauth_path: Path) -> None:
-    oauth_exists = (env_path.parent / oauth_path).exists() if not oauth_path.is_absolute() else oauth_path.exists()
+    oauth_exists = (
+        (env_path.parent / oauth_path).exists()
+        if not oauth_path.is_absolute()
+        else oauth_path.exists()
+    )
     oauth_status = "[green]ada[/green]" if oauth_exists else "[yellow]belum ada[/yellow]"
 
     console.print(

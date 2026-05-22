@@ -50,9 +50,11 @@ def _assign_licenses(runtime: Any, results: list[Any], license_key: str) -> None
 def _resolve_user_targets(runtime: Any, *, file: Path | None, domain: str | None) -> list[str]:
     if file:
         from gsm.cli._shared import read_lines
+
         return read_lines(file)
     if domain:
         from gsm.clients.google_admin import GoogleAdminError
+
         try:
             ws_users = runtime.admin.list_users(domain=domain)
         except GoogleAdminError as e:

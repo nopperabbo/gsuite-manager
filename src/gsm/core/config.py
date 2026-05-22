@@ -29,10 +29,14 @@ class Settings(BaseSettings):
     delay_per_domain_sec: float = Field(default=3.0, ge=0)
     delay_per_user_sec: float = Field(default=1.0, ge=0)
 
-    dns_check_resolvers: Annotated[list[str], NoDecode] = Field(default_factory=lambda: ["8.8.8.8", "1.1.1.1"])
+    dns_check_resolvers: Annotated[list[str], NoDecode] = Field(
+        default_factory=lambda: ["8.8.8.8", "1.1.1.1"]
+    )
     dns_check_timeout_sec: float = Field(default=5.0, gt=0)
     dns_check_max_attempts: int = Field(default=6, ge=1)
-    dns_check_backoff_sec: Annotated[list[int], NoDecode] = Field(default_factory=lambda: [10, 20, 30, 60, 120, 180])
+    dns_check_backoff_sec: Annotated[list[int], NoDecode] = Field(
+        default_factory=lambda: [10, 20, 30, 60, 120, 180]
+    )
 
     ledger_path: Path = Path("./gsm_state.json")
 

@@ -15,9 +15,13 @@ __all__ = ["users_audit"]
 @users_app.command("audit")
 def users_audit(
     ctx: typer.Context,
-    inactive_days: int = typer.Option(30, "--inactive-days", "-d", help="Threshold hari tidak login."),
+    inactive_days: int = typer.Option(
+        30, "--inactive-days", "-d", help="Threshold hari tidak login."
+    ),
     domain: str | None = typer.Option(None, "--domain", help="Filter by domain."),
-    output: Path | None = typer.Option(None, "--output", "-o", help="Save inactive emails ke file."),
+    output: Path | None = typer.Option(
+        None, "--output", "-o", help="Save inactive emails ke file."
+    ),
     json_output: bool = typer.Option(False, "--json", help="Output as JSON."),
 ) -> None:
     """List users yang tidak login > N hari. Berguna untuk cleanup dead accounts."""
@@ -79,7 +83,9 @@ def users_audit(
             table.add_row(email, last, str(days) if days < 9999 else "never")
         console.print(table)
     else:
-        console.print(f"[green][+] All {active} users logged in within {inactive_days} days.[/green]")
+        console.print(
+            f"[green][+] All {active} users logged in within {inactive_days} days.[/green]"
+        )
 
     console.print(f"\n[green]Active: {active}[/green]  [yellow]Inactive: {len(inactive)}[/yellow]")
 

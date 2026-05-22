@@ -45,16 +45,16 @@ class TestGoogleAdminClient:
 
     def test_add_domain_duplicate_treated_as_success(self, auth_admin):
         auth, service = auth_admin
-        service.domains.return_value.insert.return_value.execute.side_effect = (
-            _http_error(409, b'{"error": "Entity already exists"}')
+        service.domains.return_value.insert.return_value.execute.side_effect = _http_error(
+            409, b'{"error": "Entity already exists"}'
         )
         client = GoogleAdminClient(auth)
         assert client.add_domain("example.com") is True
 
     def test_add_domain_other_error_raises(self, auth_admin):
         auth, service = auth_admin
-        service.domains.return_value.insert.return_value.execute.side_effect = (
-            _http_error(500, b'{"error":"server"}')
+        service.domains.return_value.insert.return_value.execute.side_effect = _http_error(
+            500, b'{"error":"server"}'
         )
         client = GoogleAdminClient(auth)
         with pytest.raises(GoogleAdminError):
@@ -76,8 +76,8 @@ class TestGoogleAdminClient:
 
     def test_create_user_duplicate_ok(self, auth_admin):
         auth, service = auth_admin
-        service.users.return_value.insert.return_value.execute.side_effect = (
-            _http_error(409, b'{"error":"duplicate"}')
+        service.users.return_value.insert.return_value.execute.side_effect = _http_error(
+            409, b'{"error":"duplicate"}'
         )
         client = GoogleAdminClient(auth)
         assert (
@@ -97,7 +97,6 @@ class TestGoogleAdminClient:
         }
         client = GoogleAdminClient(auth)
         assert len(client.list_domains()) == 2
-
 
     # --- update_password ---
 
@@ -227,8 +226,8 @@ class TestGoogleAdminClient:
 
     def test_delete_user_not_found_ok(self, auth_admin):
         auth, service = auth_admin
-        service.users.return_value.delete.return_value.execute.side_effect = (
-            _http_error(404, b'{"error":"resource not found"}')
+        service.users.return_value.delete.return_value.execute.side_effect = _http_error(
+            404, b'{"error":"resource not found"}'
         )
         client = GoogleAdminClient(auth)
         assert client.delete_user("u@x.com") is True
@@ -366,8 +365,8 @@ class TestGoogleAdminClient:
 
     def test_create_group_duplicate_ok(self, auth_admin):
         auth, service = auth_admin
-        service.groups.return_value.insert.return_value.execute.side_effect = (
-            _http_error(409, b'{"error":"Entity already exists"}')
+        service.groups.return_value.insert.return_value.execute.side_effect = _http_error(
+            409, b'{"error":"Entity already exists"}'
         )
         client = GoogleAdminClient(auth)
         assert client.create_group("g@x.com") is True
@@ -409,8 +408,8 @@ class TestGoogleAdminClient:
 
     def test_add_group_member_duplicate_ok(self, auth_admin):
         auth, service = auth_admin
-        service.members.return_value.insert.return_value.execute.side_effect = (
-            _http_error(409, b'{"error":"Entity already exists"}')
+        service.members.return_value.insert.return_value.execute.side_effect = _http_error(
+            409, b'{"error":"Entity already exists"}'
         )
         client = GoogleAdminClient(auth)
         assert client.add_group_member("g@x.com", "u@x.com") is True
@@ -432,8 +431,8 @@ class TestGoogleAdminClient:
 
     def test_remove_group_member_not_found_ok(self, auth_admin):
         auth, service = auth_admin
-        service.members.return_value.delete.return_value.execute.side_effect = (
-            _http_error(404, b'{"error":"resource not found"}')
+        service.members.return_value.delete.return_value.execute.side_effect = _http_error(
+            404, b'{"error":"resource not found"}'
         )
         client = GoogleAdminClient(auth)
         assert client.remove_group_member("g@x.com", "u@x.com") is True
@@ -517,8 +516,8 @@ class TestGoogleVerifyClient:
 
     def test_get_token_http_error_raises(self, auth_verify):
         auth, service = auth_verify
-        service.webResource.return_value.getToken.return_value.execute.side_effect = (
-            _http_error(403)
+        service.webResource.return_value.getToken.return_value.execute.side_effect = _http_error(
+            403
         )
         client = GoogleVerifyClient(auth)
         with pytest.raises(GoogleVerifyError):
@@ -534,19 +533,17 @@ class TestGoogleVerifyClient:
 
     def test_verify_already_verified_ok(self, auth_verify):
         auth, service = auth_verify
-        service.webResource.return_value.insert.return_value.execute.side_effect = (
-            _http_error(400, b'{"error":"already verified"}')
+        service.webResource.return_value.insert.return_value.execute.side_effect = _http_error(
+            400, b'{"error":"already verified"}'
         )
         client = GoogleVerifyClient(auth)
         assert client.verify_domain("example.com") is True
 
     def test_verify_token_not_found_raises(self, auth_verify):
         auth, service = auth_verify
-        service.webResource.return_value.insert.return_value.execute.side_effect = (
-            _http_error(
-                400,
-                b'{"error":"verification token could not be found on your site"}',
-            )
+        service.webResource.return_value.insert.return_value.execute.side_effect = _http_error(
+            400,
+            b'{"error":"verification token could not be found on your site"}',
         )
         client = GoogleVerifyClient(auth)
         with pytest.raises(GoogleVerifyError):
