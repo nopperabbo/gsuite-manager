@@ -336,7 +336,6 @@ class TestEntryPoint:
         """
         import subprocess
         import sys
-
         import tempfile
 
         tmpdir = tempfile.gettempdir()

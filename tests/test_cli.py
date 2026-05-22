@@ -255,7 +255,6 @@ class TestUsersGen:
     def test_output_file_perms_0600(self, runner, env_for_cli, tmp_path):
         """Generated file should be mode 0600 (POSIX) for password safety."""
         import os
-        import stat
 
         if os.name != "posix":
             pytest.skip("chmod is no-op on Windows")
