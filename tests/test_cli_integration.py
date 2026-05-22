@@ -6,6 +6,7 @@ ledger -> Rich rendering. External APIs (CF, Google) are mocked.
 
 from __future__ import annotations
 
+import os
 from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
@@ -333,6 +334,7 @@ class TestEntryPoint:
             text=True,
             timeout=10,
             cwd=tmpdir,
+            env={**os.environ, "PYTHONUTF8": "1"},
         )
         assert proc.returncode == 0
         assert "gsm" in proc.stdout.lower()
