@@ -75,3 +75,10 @@ coverage.xml
 
 # OpenCode project config (local dev only)
 .opencode/
+.opencode-context.md
+
+# AI planning artifacts
+.sisyphus/
+
+# Property-based testing
+.hypothesis/
