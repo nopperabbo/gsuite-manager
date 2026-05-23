@@ -65,7 +65,7 @@ nav:
     - Tutorial (ID): CARA_PAKE.md
     - Testing: CARA_TEST.md
     - Production Runbook: PRODUCTION_RUNBOOK.md
+    - Troubleshooting: troubleshooting.md
   - Reference:
     - Roadmap: ROADMAP.md
     - Research: RESEARCH_GAP_ANALYSIS.md
-    - Changelog: ../CHANGELOG.md

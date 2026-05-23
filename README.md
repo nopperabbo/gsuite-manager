@@ -10,7 +10,7 @@
 
 <p align="center">
   <a href="https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml"><img src="https://github.com/nopperabbo/gsuite-manager/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/pypi/pyversions/gsuite-manager?style=flat-square" alt="Python 3.11+"></a>
+  <a href="https://www.python.org/downloads/"><img src="https://img.shields.io/badge/python-3.11%20%7C%203.12%20%7C%203.13-blue?style=flat-square" alt="Python 3.11+"></a>
   <a href="https://codecov.io/gh/nopperabbo/gsuite-manager"><img src="https://codecov.io/gh/nopperabbo/gsuite-manager/graph/badge.svg" alt="codecov"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/nopperabbo/gsuite-manager?style=flat-square" alt="License: MIT"></a>
   <a href="https://github.com/astral-sh/ruff"><img src="https://img.shields.io/badge/code%20style-ruff-000000.svg?style=flat-square" alt="Code style: ruff"></a>
@@ -48,16 +48,18 @@
 
 ## Features
 
-- **Domain onboarding** — Add to Workspace → CF zone → DNS inject → verify (7-step pipeline, idempotent)
-- **Auto-disable Email Routing** — Detects CF Email Routing conflict, disables before MX inject
-- **DNS propagation fix** — Polls 8.8.8.8 + 1.1.1.1 before verify (eliminates race failures)
-- **User management** — Create, delete, suspend, reset password, aliases, groups, OU move
-- **Auto-generate users** — Faker-based, locale-aware, collision-safe, with license assignment
-- **Audit & monitoring** — CF vs Workspace gap, DNS health, domain expiry alerts
-- **Interactive menu** — Just type `gsm`, pick a number. No commands to memorize.
-- **Progress bar + ETA** — Real-time progress for batch operations
-- **Retry with backoff** — CF API calls retry 3x on transient failures
-- **Friendly errors** — Technical errors translated to actionable hints
+| Feature | Description |
+|---------|-------------|
+| Domain onboarding | Add to Workspace → CF zone → DNS inject → verify (7-step pipeline, idempotent) |
+| Auto-disable Email Routing | Detects CF Email Routing conflict, disables before MX inject |
+| DNS propagation fix | Polls 8.8.8.8 + 1.1.1.1 before verify (eliminates race failures) |
+| User management | Create, delete, suspend, reset password, aliases, groups, OU move |
+| Auto-generate users | Faker-based, locale-aware, collision-safe, with license assignment |
+| Audit & monitoring | CF vs Workspace gap, DNS health, domain expiry alerts |
+| Interactive menu | Just type `gsm`, pick a number. No commands to memorize |
+| Progress bar + ETA | Real-time progress for batch operations |
+| Retry with backoff | CF API calls retry 3x on transient failures |
+| Friendly errors | Technical errors translated to actionable hints |
 
 ## Quick Start
 
@@ -197,16 +199,6 @@ Partially. User management commands (`gsm users *`, `gsm groups *`) work with ju
 
 Only 3 scopes: `admin.directory.user`, `admin.directory.group`, `admin.directory.domain` — minimized for security.
 </details>
-
-## Star History
-
-<a href="https://star-history.com/#nopperabbo/gsuite-manager&Date">
- <picture>
-   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=nopperabbo/gsuite-manager&type=Date&theme=dark" />
-   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=nopperabbo/gsuite-manager&type=Date" />
-   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=nopperabbo/gsuite-manager&type=Date" />
- </picture>
-</a>
 
 ## License
 

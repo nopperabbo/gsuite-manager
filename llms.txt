@@ -1,0 +1,20 @@
+# gsuite-manager
+
+> CLI tool for automating Google Workspace + Cloudflare domain & user management.
+
+## Docs
+
+- [Usage Guide](https://github.com/nopperabbo/gsuite-manager/blob/main/docs/USAGE.md)
+- [Google OAuth Setup](https://github.com/nopperabbo/gsuite-manager/blob/main/docs/SETUP_GOOGLE_OAUTH.md)
+- [Contributing](https://github.com/nopperabbo/gsuite-manager/blob/main/CONTRIBUTING.md)
+- [Architecture](https://github.com/nopperabbo/gsuite-manager/blob/main/AGENTS.md)
+
+## Quick Start
+
+git clone https://github.com/nopperabbo/gsuite-manager.git
+cd gsuite-manager
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e .
+gsm setup
+gsm doctor
+gsm

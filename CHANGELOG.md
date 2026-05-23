@@ -22,6 +22,21 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 - Improved CONTRIBUTING.md with Code of Conduct link and first-timer guide
 
+### Refactored
+
+- `google_admin.py` — Extracted `@google_api_call` decorator, reduced 423→262 lines
+- `menu.py` — Replaced 300-line if/elif with dict dispatch + `_bulk_user_action` helper
+- `auth.py` — Swallowed exceptions now logged via structlog
+- `ledger.py` — Corrupt entries logged, `datetime.now()` → `datetime.now(UTC)`
+- `health.py` — DNS exceptions no longer swallowed, report specific errors
+- `conftest.py` — Consolidated shared fixtures (settings, mock_admin, mock_cf, ledger)
+
+### Infrastructure
+
+- `Makefile` — Added with targets: ci, lint, format, typecheck, test, security, docs, clean
+- CI rewritten — SHA-pinned actions, 6 jobs (lint/typecheck/test-matrix/coverage/security/smoke), alls-green gate
+- Dynamic versioning via `importlib.metadata`
+
 ## [0.1.0] - 2026-05-16
 
 ### Added
@@ -56,3 +71,4 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `.gitignore` blocks all sensitive files
 
 [0.1.0]: https://github.com/nopperabbo/gsuite-manager/releases/tag/v0.1.0
+[Unreleased]: https://github.com/nopperabbo/gsuite-manager/compare/v0.1.0...HEAD
