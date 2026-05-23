@@ -7,6 +7,7 @@ ledger -> Rich rendering. External APIs (CF, Google) are mocked.
 from __future__ import annotations
 
 import os
+import sys
 from datetime import UTC, datetime
 from unittest.mock import MagicMock, patch
 
@@ -304,6 +305,7 @@ class TestErrorPathsUserFriendly:
 
 
 class TestEntryPoint:
+    @pytest.mark.skipif(sys.platform == "win32", reason="emoji in help text causes encoding issues on Windows")
     def test_python_m_gsm_invokable(self):
         """`python -m gsm` works when the package is properly installed.
 
