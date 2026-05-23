@@ -114,6 +114,9 @@ gsm go
 - [Google OAuth Desktop App credentials](docs/SETUP_GOOGLE_OAUTH.md)
 - [Cloudflare API Token](https://dash.cloudflare.com/profile/api-tokens) (template: "Edit zone DNS")
 
+> [!NOTE]
+> You only need Cloudflare for domain features. User management works with just Google Workspace.
+
 ## Documentation
 
 | Doc | Description |

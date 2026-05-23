@@ -35,6 +35,9 @@ pytest -k "test_name"     # single test by name
 
 ## Code Quality
 
+> [!IMPORTANT]
+> Always run `make ci` before submitting a PR. This runs lint + typecheck + tests in one command.
+
 All three must pass before submitting a PR:
 
 ```bash

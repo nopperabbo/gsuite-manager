@@ -1,5 +1,8 @@
 # Troubleshooting
 
+> [!TIP]
+> Run `gsm doctor` first — it checks all 5 connectivity requirements and tells you exactly what's wrong.
+
 Common issues and solutions for gsuite-manager.
 
 ## Authentication
@@ -13,7 +16,8 @@ gsm setup  # re-authenticate
 
 ### "The caller does not have permission"
 
-Your Google Workspace account needs **Super Admin** role. Delegated admin won't work for domain/user management APIs.
+> [!WARNING]
+> Your Google Workspace account needs **Super Admin** role. Delegated admin won't work for domain/user management APIs.
 
 ## DNS
 
