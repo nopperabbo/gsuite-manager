@@ -36,7 +36,7 @@ class Ledger:
             return
         try:
             raw = json.loads(self._path.read_text())
-        except (json.JSONDecodeError, OSError):
+        except (json.JSONDecodeError, OSError, UnicodeDecodeError):
             self._backup_corrupt_file()
             return
         if not isinstance(raw, dict):

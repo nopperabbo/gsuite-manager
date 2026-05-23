@@ -40,8 +40,11 @@ plugins:
   - mkdocstrings:
       handlers:
         python:
+          paths: [src]
           options:
             show_source: true
+            show_root_heading: true
+            members_order: source
 
 markdown_extensions:
   - admonition
@@ -58,14 +61,15 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started:
-    - Installation: USAGE.md
-    - Google OAuth Setup: SETUP_GOOGLE_OAUTH.md
-    - CF Token Rotation: QUICK_ROTATE_CF_TOKEN.md
+      - Installation & Usage: usage.md
+      - Google OAuth Setup: setup.md
   - Guide:
-    - Tutorial (ID): CARA_PAKE.md
-    - Testing: CARA_TEST.md
-    - Production Runbook: PRODUCTION_RUNBOOK.md
-    - Troubleshooting: troubleshooting.md
-  - Reference:
-    - Roadmap: ROADMAP.md
-    - Research: RESEARCH_GAP_ANALYSIS.md
+      - Production Runbook: production-runbook.md
+      - Publishing: publishing.md
+      - Troubleshooting: troubleshooting.md
+  - API Reference:
+      - CLI: reference/cli.md
+      - Clients: reference/clients.md
+      - Core: reference/core.md
+      - Models: reference/models.md
+      - State: reference/state.md

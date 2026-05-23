@@ -8,26 +8,27 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Added
 
-- Dynamic Codecov coverage badge
-- Windows support in CI matrix
-- `.editorconfig` for contributor consistency
-- `.pre-commit-config.yaml` for automated code quality
-- PyPI publish step in release workflow
-- VHS tape file for terminal demo recording
-- English usage documentation (`docs/USAGE.md`)
-- "Why gsuite-manager?" comparison section in README
-- Dark/light mode responsive Star History chart
+- Property-based tests using Hypothesis (ledger, models, error humanizer)
+- API reference documentation (auto-generated via mkdocstrings)
+- `hypothesis>=6.100.0` dev dependency
 
 ### Changed
 
-- Improved CONTRIBUTING.md with Code of Conduct link and first-timer guide
+- Bumped version to 0.3.0 for PyPI release
+- Fixed `pypa/gh-action-pypi-publish` SHA (was invalid, blocking releases)
+- Removed `continue-on-error` from PyPI publish step (fail loudly)
 
-### Refactored
+### Removed
 
-- `google_admin.py` — Extracted `@google_api_call` decorator, reduced 423→262 lines
-- `menu.py` — Replaced 300-line if/elif with dict dispatch + `_bulk_user_action` helper
-- `auth.py` — Swallowed exceptions now logged via structlog
-- `ledger.py` — Corrupt entries logged, `datetime.now()` → `datetime.now(UTC)`
+- `docs/RESEARCH_GAP_ANALYSIS.md` — internal research notes (not user-facing)
+- `docs/QUICK_ROTATE_CF_TOKEN.md` — personal operational note
+- `docs/ROADMAP.md` — moved to GitHub Projects
+- `docs/CARA_PAKE.md` — consolidated into `docs/usage.md`
+- `docs/CARA_TEST.md` — consolidated into CONTRIBUTING.md
+- `docs/demo.tape` — VHS recording config (no output in repo)
+- `STYLE.md` — consolidated into CONTRIBUTING.md
+
+## [0.2.0] - 2025-05-23
 - `health.py` — DNS exceptions no longer swallowed, report specific errors
 - `conftest.py` — Consolidated shared fixtures (settings, mock_admin, mock_cf, ledger)
 
