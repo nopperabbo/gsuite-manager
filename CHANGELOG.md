@@ -38,7 +38,7 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - CI rewritten — SHA-pinned actions, 6 jobs (lint/typecheck/test-matrix/coverage/security/smoke), alls-green gate
 - Dynamic versioning via `importlib.metadata`
 
-## [0.1.0] - 2026-05-16
+## [0.1.0] - 2025-05-16
 
 ### Added
 
@@ -72,4 +72,5 @@ Format based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `.gitignore` blocks all sensitive files
 
 [0.1.0]: https://github.com/nopperabbo/gsuite-manager/releases/tag/v0.1.0
-[Unreleased]: https://github.com/nopperabbo/gsuite-manager/compare/v0.1.0...HEAD
+[0.2.0]: https://github.com/nopperabbo/gsuite-manager/compare/v0.1.0...v0.2.0
+[Unreleased]: https://github.com/nopperabbo/gsuite-manager/compare/v0.3.0...HEAD

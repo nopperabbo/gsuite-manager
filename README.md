@@ -23,7 +23,7 @@
 </p>
 
 <p align="center">
-  <a href="docs/USAGE.md">Documentation</a> •
+  <a href="https://nopperabbo.github.io/gsuite-manager/">Documentation</a> •
   <a href="CONTRIBUTING.md">Contributing</a> •
   <a href="https://github.com/nopperabbo/gsuite-manager/discussions">Discussions</a>
 </p>
@@ -111,7 +111,7 @@ gsm go
 - Python 3.11+
 - Google Workspace admin account
 - Cloudflare account with domains as zones
-- [Google OAuth Desktop App credentials](docs/SETUP_GOOGLE_OAUTH.md)
+- [Google OAuth Desktop App credentials](docs/setup.md)
 - [Cloudflare API Token](https://dash.cloudflare.com/profile/api-tokens) (template: "Edit zone DNS")
 
 > [!NOTE]
@@ -121,13 +121,10 @@ gsm go
 
 | Doc | Description |
 |---|---|
-| [Usage Guide (English)](docs/USAGE.md) | Complete command reference |
-| [Tutorial (Bahasa Indonesia)](docs/CARA_PAKE.md) | Full usage guide |
-| [How to Test](docs/CARA_TEST.md) | Tier 1 smoke + Tier 2 real test |
-| [Google OAuth Setup](docs/SETUP_GOOGLE_OAUTH.md) | Get credentials.json step-by-step |
-| [CF Token Rotation](docs/QUICK_ROTATE_CF_TOKEN.md) | 3-minute token refresh |
-| [Production Runbook](docs/PRODUCTION_RUNBOOK.md) | Pre-production checklist |
-| [Roadmap](docs/ROADMAP.md) | Future phases |
+| [Usage Guide](docs/usage.md) | Complete command reference |
+| [Google OAuth Setup](docs/setup.md) | Get credentials.json step-by-step |
+| [Production Runbook](docs/production-runbook.md) | Pre-production checklist |
+| [Troubleshooting](docs/troubleshooting.md) | Common issues & fixes |
 | [Changelog](CHANGELOG.md) | Release history |
 | [Contributing](CONTRIBUTING.md) | Dev setup & guidelines |
 

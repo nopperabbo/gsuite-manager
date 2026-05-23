@@ -15,7 +15,7 @@
 
 ---
 
-For full documentation, visit the [Usage Guide](USAGE.md).
+For full documentation, visit the [Usage Guide](usage.md).
 
 ## Quick Start
 
